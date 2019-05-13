@@ -15,3 +15,11 @@ Use markdown, Github, Jekyll, Netlify/Netlify CMS to implement a **docs as code*
 - Natalia Oreshkina
 - Uzair Ali 
 
+## We manage our project using Mural
+
+[Docs4All hackathon project](https://app.mural.co/t/axwaysoftware/m/axwaysoftware/1557314486524/4c1efcdaecfcdfce27201c7b46a7b5b888caad8d) (requires Axway login)
+
+
+
+## more
+ more
