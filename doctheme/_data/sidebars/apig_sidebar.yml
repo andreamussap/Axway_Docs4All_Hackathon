@@ -23,19 +23,19 @@ entries:
   - title: Getting Started
     output: web, pdf
     folderitems:
-    - title: API Gateway home
+    - title: Introduction to API Gateway
       url: /apig_landing_page.html
       output: web
 
-    - title: Sample 1
+    - title: Install API Gateway
       url: /p1_sample1.html
       output: web, pdf
 
-    - title: Sample 2
+    - title: Deploy API Gateway in containers
       url: /p1_sample2.html
       output: web, pdf
 
-    - title: Sample 3
+    - title: Upgrade API Gateway
       url: /p1_sample3.html
       output: web, pdf
 
