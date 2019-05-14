@@ -12,7 +12,8 @@ site_title: Jekyll theme for documentation
 company_name: Your company
 # this appears in the footer
 
-github_editme_path: tomjoht/documentation-theme-jekyll/blob/gh-pages/
+github_editme_path: andreamussap/Axway_Docs4All_Hackathon/blob/master/doctheme/
+# TODO Change the path above if we move the site to the root folder (delete the doctheme part of the path)
 # if you're using Github, provide the basepath to the branch you've created for reviews, following the sample here. if not, leave this value blank.
 
 # gitlab_editme_path: tomjoht/documentation-theme-jekyll/blob/gh-pages/
