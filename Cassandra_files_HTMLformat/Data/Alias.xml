@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CatapultAliasFile>
+    <Map Name="install_cass_startstop" Link="CassandraTopics/cassandra_manage.htm" ResolvedId="1301" />
+    <Map Name="install_cass_ops" Link="CassandraTopics/cassandra_ops.htm" ResolvedId="1302" />
+    <Map Name="install_cass_ha" Link="CassandraTopics/cassandra_config.htm" ResolvedId="1300" />
+</CatapultAliasFile>

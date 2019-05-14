@@ -1,0 +1,1 @@
+define({r:0.5,st:'Stem',n:1,t:[0],u:['../Content/CassandraTopics/CassandraAboutPreface.htm'],s:['$'],p:[['$',6],['describes',1],['nodetool',8],['to',4]]});

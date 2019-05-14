@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MadCapSynonyms xml:lang="en-us">
+    <Groups />
+    <Directional>
+        <DirectionalSynonym Stem="true" From="problem solving" To="error" FromStem="problem solv" />
+        <DirectionalSynonym Stem="true" From="error" To="problem solv" FromStem="error" />
+        <DirectionalSynonym Stem="true" From="troubleshooting" To="problem solv" FromStem="troubleshoot" />
+    </Directional>
+</MadCapSynonyms>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" lang="en-us" xml:lang="en-us" data-mc-search-type="Stem" data-mc-help-system-file-name="index.xml" data-mc-path-to-help-system="../../" data-mc-target-type="WebHelp2" data-mc-runtime-file-type="Topic" data-mc-preload-images="false" data-mc-in-preview-mode="false" data-mc-toc-path="">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>setup-cassandra script reference</title>
+        <link rel="shortcut icon" href="../Resources/Images/favicon.ico" />
+        <link href="../../Skins/Default/Stylesheets/Slideshow.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/TextEffects.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/Topic.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/Components/Styles.css" rel="stylesheet" />
+        <link href="../Resources/Stylesheets/axway.css" rel="stylesheet" />
+        <link href="../Resources/TableStyles/code_window.css" rel="stylesheet" />
+        <link href="../Resources/TableStyles/SynchTableStyle.css" rel="stylesheet" />
+        <script src="../../Resources/Scripts/custom.modernizr.js">
+        </script>
+        <script src="../../Resources/Scripts/jquery.min.js">
+        </script>
+        <script src="../../Resources/Scripts/require.min.js">
+        </script>
+        <script src="../../Resources/Scripts/require.config.js">
+        </script>
+        <script src="../../Resources/Scripts/foundation.min.js">
+        </script>
+        <script src="../../Resources/Scripts/plugins.min.js">
+        </script>
+        <script src="../../Resources/Scripts/MadCapAll.js">
+        </script>
+    </head>
+    <body>
+        <h1>setup-cassandra script reference</h1>
+        <p><a name="Set"></a>The <code>setup-cassandra</code> script provided by <span class="api_gateway_variablesgateway">API Gateway</span> enables you to configure a multi-node Cassandra HA cluster automatically. You can use this script when Cassandra is installed locally along with <span class="api_gateway_variablesgateway">API Gateway</span>, or installed remotely on a different node. For details on supported Cassandra deployment architectures and HA production environments, see <a href="cassandra_config.htm" class="MCXref xref">Configure a highly available Cassandra cluster</a>.</p>
+        <p><span class="api_gateway_variablesgateway">API Gateway</span> provides the <code>setup-cassandra</code> script to help configure a Cassandra cluster by updating your Cassandra configuration files and providing  instructions to finalize the configuration. This script also creates an automatic backup of the original <code>cassandra.yaml</code> file in the following format:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p><code>&lt;<em>timestamp</em>&gt;_cassandra.yaml.bak</code>
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>This topic describes how to run the <code>setup-cassandra</code> script, and how to configure a multi-node Cassandra cluster  with username/password authentication enabled. It also describes how to configure TLS v1.2 encryption for client-server and inter-node communications in the cluster.</p>
+        <h2>Prerequisites</h2>
+        <p>The following prerequisites apply for the <code>setup-cassandra</code> script:</p>
+        <h3>Python</h3>
+        <p>
+            <ul>
+                <li value="1">Cassandra 2.2.5 requires Python 2.7.x <em>(up to 2.7.10)</em></li>
+                <li value="2">Cassandra 2.2.8 requires Python 2.7.x <em>(up to the latest)</em></li>
+                <li value="3">Cassandra <span class="api_gateway_variablescassandra_version">2.2.12</span> requires Python  2.7.x <em>(up to the latest)</em></li>
+            </ul>
+            <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                <col style="width: 23px;" />
+                <col style="width: 47px;" />
+                <col style="width: auto;" />
+                <tr>
+                    <td valign="top" />
+                    <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                    </td>
+                    <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;"><span class="api_gateway_variablesgateway">API Gateway</span> <span class="axway_variablesComponent Version">7.7</span> supports Cassandra <span class="api_gateway_variablescassandra_version">2.2.12</span>. <span class="api_gateway_variablesgateway">API Gateway</span> 7.5.3 supports Cassandra versions 2.2.5 and 2.2.8.</td>
+                </tr>
+            </table>
+        </p>
+        <h3>User name and password authentication</h3>
+        <p>User name and password authentication for clients connecting to the cluster is enabled by the <code>setup-cassandra</code> script by default. However, you must change the default user name and password created by Cassandra on startup to further secure the installation. The script provides instructions describing how to change the default user name and password and replicate the <code>system_auth</code> keyspace using the <code>cqlsh</code> command.</p>
+        <p>For more details, see <a href="#Secure" class="MCXref xref">Secure  Cassandra HA configuration</a>.</p>
+        <h3><a name="Remote"></a>Remote Cassandra&#160;HA&#160;nodes</h3>
+        <p><code>setup-cassandra</code> is available by default when Cassandra is installed locally on the same node as <span class="api_gateway_variablesgateway">API Gateway</span>. You can also configure remote Cassandra nodes to use the <code>setup-cassandra</code> script supplied by the <span class="api_gateway_variablesgateway">API Gateway</span> installation. Alternatively, you can perform all necessary Cassandra configuration changes manually. For details, see <a href="cassandra_config.htm" class="MCXref xref">Configure a highly available Cassandra cluster</a>.</p>
+        <p>To configure a remote Cassandra node to use the <code>setup-cassandra</code> script, perform the following steps:</p>
+        <ol>
+            <li value="1">Ensure that the <code>JAVA_HOME</code> environment variable is set on the remote Cassandra node. </li>
+            <li value="2">Ensure that Python is installed  and added to your <code>PATH</code> environment variable on the remote Cassandra node.</li>
+            <li value="3">Change to the following directory on the local <span class="api_gateway_variablesgateway">API Gateway</span> node:</li>
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                            <p><code>AXWAY_HOME/<span class="api_gateway_variableslc_product">apigateway</span>/system/lib/jython/</code>
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <li value="4">Copy the <code>setup-cassandra.py</code> file to your chosen directory on the remote Cassandra node.</li>
+        </ol>
+        <h2>Run the setup-cassandra script</h2>
+        <p>The instructions for running the <code>setup-cassandra</code> script depend on whether the node is local or remote to <span class="api_gateway_variablesgateway">API Gateway</span>.</p>
+        <h3>Run setup-cassandra on local <span class="api_gateway_variablesgateway">API Gateway</span> node</h3>
+        <p data-mc-conditions="api_gateway_conditions.NoWindows">On <span class="api_gateway_variablesunix_flavours">Linux</span>, the <code>setup-cassandra</code> script is bundled with the <span class="api_gateway_variablesgateway">API Gateway</span> installation and located in the <code>bin</code> directory. To run this script on a local node:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>$ cd AXWAY_HOME/<span class="api_gateway_variableslc_product">apigateway</span>/posix/bin</p>
+                        <p>$ ./setup-cassandra &lt;<em>options</em>&gt;</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">Windows is supported  only for a limited set of developer tools. <span class="api_gateway_variablesgateway">API Gateway</span> and <span class="api_gateway_variablesapi_mgr">API Manager</span> do not support Windows.</td>
+            </tr>
+        </table>
+        <h3><a name="Run"></a>Run setup-cassandra on remote Cassandra&#160;node</h3>
+        <p>On a remote Cassandra node, you first must ensure that the <code>setup-cassandra</code> script has been configured as described in <a href="#Remote" class="MCXref xref">Remote Cassandra&#160;HA&#160;nodes</a>. To run this script on a remote node:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>$ ./setup-cassandra.py &lt;<em>options</em>&gt;</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">The example commands in this topic assume that Cassandra is installed locally on an <span class="api_gateway_variablesgateway">API Gateway</span> node.</td>
+            </tr>
+        </table>
+        <h2><a name="Configur"></a>Configure the seed node</h2>
+        <p>To configure Cassandra to run as the cluster seed node, run the <code>setup-cassandra</code> script with the following options:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>setup-cassandra --seed --own-ip=&lt;<em>OWN_IP</em>&gt; --nodes=&lt;<em>NUMBER_OF_NODES</em>&gt; --cassandra-config=&lt;<em>CONFIG_FILE</em>&gt;</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>These options are described as follows:</p>
+        <table summary="Operating system requirements" style="mc-table-style: url('../Resources/TableStyles/SynchTableStyle.css');" class="TableStyle-test_SynchTableStyle" cellspacing="0">
+            <col class="Column-Column1" style="width: 110px;" />
+            <col class="Column-Column1" />
+            <tbody>
+                <tr class="Body-Body1" data-mc-conditions="">
+                    <td class="BodyE-Column1-Body1">
+                        <p><code>OWN_IP</code>
+                        </p>
+                    </td>
+                    <td class="BodyD-Column1-Body1">IP address of this Cassandra host. Cassandra uses this IP address for communicating with other nodes in the cluster and for receiving client connections.</td>
+                </tr>
+                <tr class="Body-Body2" data-mc-conditions="">
+                    <td class="BodyE-Column1-Body2"><code>NODES</code>
+                    </td>
+                    <td class="BodyD-Column1-Body2">Total number of the nodes in the Cassandra cluster.</td>
+                </tr>
+                <tr class="Body-Body1">
+                    <td class="BodyB-Column1-Body1"><code>CONFIG_FILE</code>
+                    </td>
+                    <td class="BodyA-Column1-Body1">Full path to <code>cassandra.yaml</code> configuration file. Typically the path is <code>&lt;CASSANDRA_INSTALL_DIR&gt;/conf/cassandra.yaml</code>.</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>For example:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>setup-cassandra --seed --own-ip=<em>ipA</em> --nodes=3 --cassandra-config=/opt/cassandra/conf/cassandra.yaml</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h2>Configure additional nodes</h2>
+        <p>To configure Cassandra on the remaining cluster nodes, run the <code>setup-cassandra</code> script with the following options:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" style="width: 872px;" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>setup-cassandra --seed-ip=&lt;<em>SEED_IP</em>&gt; --own-ip=&lt;<em>OWN_IP</em>&gt;  --cassandra-config=&lt;<em>CONFIG_FILE</em>&gt;</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>These options are described as follows:</p>
+        <table summary="Operating system requirements" style="mc-table-style: url('../Resources/TableStyles/SynchTableStyle.css');" class="TableStyle-test_SynchTableStyle" cellspacing="0">
+            <col class="Column-Column1" />
+            <col class="Column-Column1" />
+            <tbody>
+                <tr class="Body-Body1" data-mc-conditions="">
+                    <td class="BodyE-Column1-Body1">
+                        <p><code>SEED_IP</code>
+                        </p>
+                    </td>
+                    <td class="BodyD-Column1-Body1">IP address of the Cassandra seed host (see <a href="#Configur" class="MCXref xref">Configure the seed node</a>).</td>
+                </tr>
+                <tr class="Body-Body2">
+                    <td class="BodyE-Column1-Body2">
+                        <p><code>OWN_IP</code>
+                        </p>
+                    </td>
+                    <td class="BodyD-Column1-Body2">IP address of this Cassandra host. Cassandra uses this IP address for communicating with other nodes in the cluster and for receiving client connections.</td>
+                </tr>
+                <tr class="Body-Body1">
+                    <td class="BodyB-Column1-Body1"><code>CONFIG_FILE</code>
+                    </td>
+                    <td class="BodyA-Column1-Body1">Full path to <code>cassandra.yaml</code> configuration file. Typically the path is <code>&lt;CASSANDRA_INSTALL_DIR&gt;/conf/cassandra.yaml</code>.</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>For example:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>setup-cassandra  --seed-ip=<em>ipA</em> --own-ip=<em>ipB</em> --cassandra-config=/opt/cassandra/conf/cassandra.yaml</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h2><a name="Secure"></a>Secure  Cassandra HA configuration</h2>
+        <p>This section explains how to use the <code>setup-cassandra</code> script to secure your Cassandra HA configuration. The examples assume that Cassandra is installed locally on the same host as <span class="api_gateway_variablesgateway">API Gateway</span>. See also <a href="#Run" class="MCXref xref">Run setup-cassandra on remote Cassandra&#160;node</a>.</p>
+        <h3>Reset your default user name and password</h3>
+        <p>You can use the <code>setup-cassandra</code> script to reset the default user name and password  (<code>cassandra</code>/<code>cassandra</code>). Run this command to see the instructions that you need to follow. For example, on the seed node the instructions are as follows:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>./setup-cassandra --seed --own-ip=<em>ipA</em> --nodes=3 --cassandra config=/opt/cassandra/conf/cassandra.yaml </p>
+                        <p>Connect to Cassandra with cqlsh and run following commands to create an alternative superuser account:</p>
+                        <p>CREATE USER admin WITH PASSWORD 'amujsa26al2ns' SUPERUSER;QUIT<br />PLEASE MAKE A NOTE OF USERNAME AND PASSWORD FOR THE NEW SUPERUSER ACCOUNT: <br />USERNAME: admin PASSWORD: amujsa26al2ns</p>
+                        <p>Connect to Cassandra using newly created account to lock out the default Cassandra superuser account and update "system_auth" keyspace replication factor:</p>
+                        <p>/opt/cassandra/bin/cqlsh  -u admin -p amujsa26al2ns node1 ALTER USER cassandra WITH PASSWORD 'g5q5h4h3bf1pnh2nsra9iucd82d7f1jams468vhaiimtibtuqpf' NOSUPERUSER; </p>
+                        <p>ALTER KEYSPACE "system_auth" WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor': 3 }; QUIT </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;"> If you are setting up a Cassandra HA&#160;cluster, you must replicate the <code>system_auth</code> keyspace as shown in this example. This enables <span class="api_gateway_variablesgateway">API Gateway</span> to communicate with the cluster if a node goes down. For more details, see the <a href="https://docs.datastax.com/en/archived/cassandra/2.2/cassandra/configuration/secureConfigNativeAuth.html?hl=authentication" target="_blank">Configuring authentication</a> documentation.</td>
+            </tr>
+        </table>
+        <h3>Enable node-to-node   traffic encryption</h3>
+        <p>To configure TLS v1.2  encryption, you must generate a private key and certificate for every Cassandra node in the cluster. You must also obtain the certificate for the Certification Authority (CA) used to generate the node certificate. You can use <span class="api_gateway_variablespolicy_studio">Policy Studio</span> to create the necessary certificates and keys or any other suitable method for generating certificates.</p>
+        <p>You must export and save the node certificate and private key as a PKCS12  file named <code>server.p12</code>, and save the CA certificate as a PEM file named (<code>server-ca.pem</code>).  You must place these files into the same directory where you run the <code>setup-cassandra</code> script from.</p>
+        <p>To use the <code>setup-cassandra</code> script to configure node-to-node TLS/SSL encryption, add the <code>--enable-server-encryption</code> option. For example:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>setup-cassandra --seed-ip=<em>ipA</em> --own-ip=<em>ipB</em> --cassandra-config=/opt/cassandra/conf/cassandra.yaml --enable-server-encryption</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>After you run the <code>setup-cassandra</code> script, it provides instructions for converting the keys and certificates to a format required by Cassandra. After you perform these instructions, you can remove the <code>server.p12</code> and <code>server-ca.pem</code> files from the system.</p>
+        <table class="AutoNumber_p_caution" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 20px;" />
+            <col style="width: 75px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Caution &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_caution" valign="top" data-mc-autonum="&lt;b&gt;Caution &#160;&lt;/b&gt;">Anyone with a private key or certificate signed by <code>server-ca.pem</code> can connect to the cluster. You should limit the use of this CA to signing the node certificates only. In particular, do not use the same CA to sign client-to-node certificates.</td>
+            </tr>
+        </table>
+        <h3>Enable client-to-node   traffic encryption</h3>
+        <p>The requirements for setting up client-to-node TLS/SSL encryption are the same as the node-to-node TLS/SSL requirements. However, you must save the CA certificate/private key and node certificate in <code>client-ca.pem</code> and <code>client.p12</code> files respectively. For example, to instruct the <code>setup-cassandra</code> script to configure client-to-node encryption, add the <code>--enable-client-encryption</code> option to script arguments:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>setup-cassandra --seed-ip=<em>ipA</em> --own-ip=<em>ipB</em> --cassandra-config=/opt/cassandra/conf/cassandra.yaml --enable-client-encryption</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>After you run the <code>setup-cassandra</code> script, it provides instructions for converting the keys and certificates to a format required by Cassandra. After you perform these instructions, you can remove the <code>client.p12</code> and <code>client-ca.pem</code> files  from the system.</p>
+        <h3>Configure the cqlsh command for client-to-node  traffic encryption</h3>
+        <p>When the Cassandra cluster has been configured to use client-to-node TLS/SSL encryption, you must configure all clients connecting to the cluster (including <code>cqlsh</code>) to use TLS/SSL.</p>
+        <p>If client-to-node TLS/SSL  encryption has been enabled, the <code>setup-cassandra</code> script creates a configuration file (<code>cqlshrc</code>) with the necessary configuration to enable TLS/SSL  encryption. However, you must provide following files to configure <code>cqlsh</code> for TLS/SSL:</p>
+        <ul>
+            <li value="1"><code>client-ca.pem</code>: PEM file containing CA&#160;certificate</li>
+            <li value="2"><code>cqlsh-cert.pem</code>: PEM file containing client certificate for <code>cqlsh</code></li>
+            <li value="3"><code>cqlsh-key.pem</code>: PEM file containing private key of client certificate for <code>cqlsh</code></li>
+        </ul>
+        <h2>Updated Cassandra configuration</h2>
+        <p>This section shows the updates that the <code>setup-cassandra</code> script makes to the <code>cassandra.yaml</code> configuration file: </p>
+        <h3>General settings</h3>
+        <ul>
+            <li value="1"><code>seed_provider</code>, <code>parameters</code>, <code>seeds</code>: &lt;<em>IP address of seed node</em>&gt;</li>
+            <li value="2"><code>start_native_transport</code>: <code>true</code></li>
+            <li value="3"><code>native_transport_port</code>: <code>9042</code></li>
+            <li value="4"><code>listen_address</code>: IP address of the node</li>
+            <li value="5"><code>rpc_address</code>: IP address of the node</li>
+            <li value="6"><code>authenticator</code>: <code>org.apache.cassandra.auth.PasswordAuthenticator</code></li>
+            <li value="7"><code>authorizer</code>: <code>org.apache.cassandra.auth.CassandraAuthorizer</code></li>
+        </ul>
+        <h3>Node-to-node  traffic encryption</h3>
+        <p>If node-to-node TLS/SSL traffic encryption is enabled:</p>
+        <ul>
+            <li value="1"><code>server_encryption_options</code>: Specified options</li>
+            <li value="2"><code>internode_encryption</code>: all</li>
+            <li value="3"><code>keystore</code>: &lt;<code><em>server-keystore</em>.jks</code>&gt;</li>
+            <li value="4"><code>keystore_password</code>: Randomly generated password</li>
+            <li value="5"><code>truststore</code>: &lt;<code><em>server-truststore</em>.jks</code>&gt;</li>
+            <li value="6"><code>truststore_password</code>: Randomly generated password</li>
+            <li value="7"><code>protocol</code>: TLS</li>
+            <li value="8"><code>store_type</code>: JKS</li>
+            <li value="9"><code>algorithm</code>: SunX509</li>
+            <li value="10"><code>require_client_auth</code>: true</li>
+        </ul>
+        <h3>Client-to-node traffic encryption</h3>
+        <p>If client-to-node TLS/SSL traffic encryption is enabled:</p>
+        <ul>
+            <li value="1"><code>client_encryption_options</code>: Specified options</li>
+            <li value="2"><code>enabled</code>: true</li>
+            <li value="3"><code>optional</code>: false</li>
+            <li value="4"><code>keystore</code>: &lt;<code><em>client-keystore</em>.jks</code>&gt;</li>
+            <li value="5"><code>keystore_password</code>: Randomly generated password</li>
+            <li value="6"><code>truststore</code>: &lt;<code><em>client-truststore</em>.jks</code>&gt;</li>
+            <li value="7"><code>truststore_password</code>: Randomly generated password</li>
+            <li value="8"><code>protocol</code>: TLS</li>
+            <li value="9"><code>store_type</code>: JKS</li>
+            <li value="10"><code>algorithm</code>: SunX509</li>
+            <li value="11"><code>require_client_auth</code>: true</li>
+        </ul>
+    </body>
+</html>

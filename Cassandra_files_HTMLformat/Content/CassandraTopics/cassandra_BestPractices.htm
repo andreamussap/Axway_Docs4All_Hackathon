@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" lang="en-us" xml:lang="en-us" data-mc-search-type="Stem" data-mc-help-system-file-name="index.xml" data-mc-path-to-help-system="../../" data-mc-target-type="WebHelp2" data-mc-runtime-file-type="Topic" data-mc-preload-images="false" data-mc-in-preview-mode="false" data-mc-toc-path="">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>Apache Cassandra best practices</title>
+        <link rel="shortcut icon" href="../Resources/Images/favicon.ico" />
+        <link href="../../Skins/Default/Stylesheets/Slideshow.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/TextEffects.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/Topic.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/Components/Styles.css" rel="stylesheet" />
+        <link href="../Resources/Stylesheets/axway.css" rel="stylesheet" />
+        <link href="../Resources/TableStyles/code_window.css" rel="stylesheet" />
+        <script src="../../Resources/Scripts/custom.modernizr.js">
+        </script>
+        <script src="../../Resources/Scripts/jquery.min.js">
+        </script>
+        <script src="../../Resources/Scripts/require.min.js">
+        </script>
+        <script src="../../Resources/Scripts/require.config.js">
+        </script>
+        <script src="../../Resources/Scripts/foundation.min.js">
+        </script>
+        <script src="../../Resources/Scripts/plugins.min.js">
+        </script>
+        <script src="../../Resources/Scripts/MadCapAll.js">
+        </script>
+    </head>
+    <body>
+        <h1><span class="api_gateway_variablescassandra">Apache Cassandra</span> best practices</h1>
+        <p>Follow the best practices in this section to achieve a stable <span class="api_gateway_variablescassandra">Apache Cassandra</span> environment, and to prevent data integrity and performance issues.
+	You must complete all of these tasks before you start <span class="api_gateway_variablescassandra">Apache Cassandra</span>.</p>
+        <h2>Clock synchronization and health check</h2>
+        <p>The clocks of the system across all Cassandra cluster machines and the clocks of all client machines (<span class="api_gateway_variablesgateway">API Gateway</span> hosts) must be synchronized to one (1) millisecond precision.</p>
+        <p>Failing to synchronize the clocks will result in:</p>
+        <ul>
+            <li value="1">Faults in data synchronization</li>
+            <li value="2">Failure to start or configure the machines correctly</li>
+        </ul>
+        <p>The clock synchronization requires the use of a time service, such as NTP (Network Time Protocol), to ensure that the time is synchronized across all machines in the cluster.</p>
+        <p> You must also perform a health check of the clock drift between nodes  on a regular basis. </p>
+        <h2>User account</h2>
+        <p>You must create a specific <span class="suite_variablesUNIX">UNIX</span> user account for the Cassandra database. This user account must own all Cassandra related files, and it must be used to run the Cassandra process.</p>
+        <p>This guide refers to this user account as <code>cassandra_user</code>.</p>
+        <h2>Required system tuning</h2>
+        <p>Cassandra executes basic performance and tuning checks at startup, and it writes warning messages to the console and to the system log file when issues are found.</p>
+        <p>These are examples of warnings for a misconfigured Cassandra host:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre xml:space="preserve">
+WARN Unable to lock JVM memory (ENOMEM). This can result in part of the JVM being swapped out, 
+     especially with mmapped I/O enabled. Increase RLIMIT_MEMLOCK or run Cassandra as root<br />WARN jemalloc shared library could not be preloaded to speed up memory allocations<br />WARN Cassandra server running in degraded mode. Is swap disabled? : true, 
+     Address space adequate? : true, nofile limit adequate? : false, nproc limit adequate? : false
+</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>
+        Perform the following procedures to ensure that each Cassandra machine meets the basic tuning requirements.
+        </p>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">The following commands apply for Red Hat 7.x. If you are using another <span class="api_gateway_variablesunix_flavours">Linux</span> distribution, consult your system administrator.</td>
+            </tr>
+        </table>
+        <h3>Install jemalloc</h3>
+        <p>Ensure that <code>jemalloc</code> is installed.</p>
+        <ol>
+            <li value="1">Run the command <code>rpm -q jemalloc</code> to check if jemalloc is installed. </li>
+            <li value="2">If jemalloc is not installed, run the following command to install it from <code>epel</code>:</li>
+        </ol>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre xml:space="preserve">sudo rpm -iv https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+sudo yum install -y jemalloc</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>Turn swap off</h3>
+        <p>Ensure that you turn <code>swap</code> off.</p>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;"><span class="api_gateway_variablescassandra">Apache Cassandra</span> recommends that <code>swap</code> is disabled. If your company policies or production environment requires <code>swap</code> to be <code>on</code> for other processes, you must ensure that the Cassandra process is not <code>swapped out</code> at any time.</td>
+            </tr>
+        </table>
+        <ol>
+            <li value="1">The line <code>cat/proc/swaps</code> in the <code>/etc/fstab</code> file should show <code>NO entries</code>. If entries are present, execute the following command to disable all  swap entries currently active: </li>
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">sudo swapoff -a sad
+                            </td>
+                    </tr>
+                </tbody>
+            </table>
+            <li value="2">Delete all swap entries in <code>/etc/fstab</code> to ensure that swap is not enabled again when the machine is restarted.</li>
+        </ol>
+        <h3>Set limits for user account</h3>
+        <p>Set the minimum limits for the user account.</p>
+        <p>If running with a console or <code>init.d</code>, create a <code>/etc/security/limits.d/cassandra.conf</code> file, and add the following lines to it (replace <code>cassandra_user</code> with the relevant user account).</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre xml:space="preserve">&lt;cassandra_user&gt; - memlock unlimited
+&lt;cassandra_user&gt; - nofile 100000
+&lt;cassandra_user&gt; - nproc 32768
+&lt;cassandra_user&gt; - as unlimited</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>If running via a system service, ensure that the following lines are present in the <code>[SERVICE]</code> section of the Cassandra service file:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre xml:space="preserve">LimitMEMLOCK=infinity
+LimitNOFILE=100000
+LimitNPROC=32768
+LimitAS=infinityd</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h2><a name="Clean"></a>Clean up Cassandra repair history</h2>
+        <p>By default <span class="api_gateway_variablescassandra">Apache Cassandra</span> 2.2.x does <em>not</em> clean up <code>nodetool repair</code> trace history. This can cause the <code>system_distributed</code> keyspace to increase in size over time. The extent of the issue can be seen by running the following command to see how much space is being consumed by <code>system_distributed</code>:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre>du -md 1 &lt;cassandra_root&gt;/data/data/ | sort -n</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>To prevent this, it is recommended that you set a 7 day TTL on the repair history tables and remove any existing data. First, execute the following using <code>cqlsh</code> on one of the Cassandra nodes:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre xml:space="preserve">ALTER TABLE system_distributed.repair_history WITH default_time_to_live = 604800;
+TRUNCATE system_distributed.repair_history;
+ALTER TABLE system_distributed.parent_repair_history WITH default_time_to_live = 604800;
+TRUNCATE system_distributed.parent_repair_history;</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>To reclaim the disk space, clean up the snapshots generated by the truncate by executing the following against all Cassandra nodes:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre>nodetool clearsnapshot system_distributed</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>Further information</h3>
+        <p>See also <a href="cassandra_ops.htm" class="MCXref xref">Perform essential Apache Cassandra operations</a>.</p>
+    </body>
+</html>

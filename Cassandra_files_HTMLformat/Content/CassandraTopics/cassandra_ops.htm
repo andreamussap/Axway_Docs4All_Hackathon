@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" lang="en-us" xml:lang="en-us" data-mc-search-type="Stem" data-mc-help-system-file-name="index.xml" data-mc-path-to-help-system="../../" data-mc-target-type="WebHelp2" data-mc-runtime-file-type="Topic" data-mc-preload-images="false" data-mc-in-preview-mode="false" data-mc-toc-path="">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>Perform essential Apache Cassandra operations</title>
+        <link rel="shortcut icon" href="../Resources/Images/favicon.ico" />
+        <link href="../../Skins/Default/Stylesheets/Slideshow.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/TextEffects.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/Topic.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/Components/Styles.css" rel="stylesheet" />
+        <link href="../Resources/Stylesheets/axway.css" rel="stylesheet" />
+        <link href="../Resources/TableStyles/code_window.css" rel="stylesheet" />
+        <script src="../../Resources/Scripts/custom.modernizr.js">
+        </script>
+        <script src="../../Resources/Scripts/jquery.min.js">
+        </script>
+        <script src="../../Resources/Scripts/require.min.js">
+        </script>
+        <script src="../../Resources/Scripts/require.config.js">
+        </script>
+        <script src="../../Resources/Scripts/foundation.min.js">
+        </script>
+        <script src="../../Resources/Scripts/plugins.min.js">
+        </script>
+        <script src="../../Resources/Scripts/MadCapAll.js">
+        </script>
+    </head>
+    <body>
+        <h1 data-mc-conditions="">Perform essential <span class="api_gateway_variablescassandra">Apache Cassandra</span> operations</h1>
+        <p> This topic describes the minimum essential operations that are required to maintain a healthy <span class="api_gateway_variablescassandra">Apache Cassandra</span> high availability (HA) cluster.</p>
+        <h2><a name="Perform"></a>Repair inconsistent nodes</h2>
+        <p><span class="api_gateway_variablescassandra">Apache Cassandra</span> has different ways to maintain data consistency across the cluster during normal runtime processing. However, to resolve any data inconsistencies that could not be resolved by normal runtime processes, you must run an external repair process on a regular basis.</p>
+        <p>For standard HA configurations, it is best to run repair once per week (during a quiet period) on each node in the cluster.</p>
+        <table class="AutoNumber_p_caution" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 20px;" />
+            <col style="width: 75px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Caution &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_caution" valign="top" data-mc-autonum="&lt;b&gt;Caution &#160;&lt;/b&gt;">The repair must only be executed on one node at a time. You must therefore adjust the repair schedule for each node in the cluster to avoid overlap.</td>
+            </tr>
+        </table>
+        <h3>Schedule repair using crontab</h3>
+        <p>When scheduling Cassandra repair events, it is best to use the <code>crontab</code> command of the user running the Cassandra process.</p>
+        <p>To edit the cron table of this user, execute <code>sudo crontab -u CASSANDRA_USER -e</code>   and paste the matching node block from the following examples:</p>
+        <h4>Example cron table entries for three-node cluster repairing one node per day (Saturday to Monday)</h4>
+        <p><strong>Node 1</strong>:</p>
+        <p>Run full repair at 1 a.m. every Saturday:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>0 1 * * 6 PATH_TO_CASSANDRA/bin/nodetool CONNECTION_SECURITY_PARAMS repair -pr --full &gt; PATH_TO_CASSANDRA/logs/last_repair.log 2&gt;&amp;1</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>Node 2</strong>:</p>
+        <p>Run full repair at 1 a.m. every Sunday:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>0 1 * * 0 PATH_TO_CASSANDRA/bin/nodetool CONNECTION_SECURITY_PARAMS repair -pr --full &gt; PATH_TO_CASSANDRA/logs/last_repair.log 2&gt;&amp;1</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>Node 3</strong>:</p>
+        <p>Run full repair at 1 a.m. every Monday:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>0 1 * * 1 PATH_TO_CASSANDRA/bin/nodetool CONNECTION_SECURITY_PARAMS repair -pr --full &gt; PATH_TO_CASSANDRA/logs/last_repair.log 2&gt;&amp;1</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>See also <a href="cassandra_BestPractices.htm#Clean" class="MCXref xref">Clean up Cassandra repair history</a>.</p>
+        <h2><a name="Replace"></a>Replace dead nodes</h2>
+        <p>If a node is down for more than 10 days, it should be replaced. For details on replacing dead Cassandra nodes, see the <a href="https://docs.datastax.com/en/archived/cassandra/2.2/cassandra/operations/opsReplaceNode.html" target="_blank">Replacing a dead node or dead seed node</a> documentation.</p>
+        <h2>Reconfigure an existing <span class="api_gateway_variablescassandra">Apache Cassandra</span> installation from scratch</h2>
+        <p>There is no need to reinstall Cassandra from scratch. Instead, you can move the Cassandra data files and restore the <code>cassandra.yaml</code> configuration file if necessary (if you updated Cassandra configuration). Perform the following steps:</p>
+        <ol>
+            <li value="1">Stop Cassandra. For details, see <a href="cassandra_manage.htm" class="MCXref xref">Manage Apache Cassandra</a>.</li>
+            <li value="2">Move <code>CASSANDRA_HOME/data</code> to <code>CASSANDRA_HOME/data/OLD-DATA-DATE</code>.</li>
+            <li value="3">Restore <code>cassandra.yaml</code> in <code>CASSANDRA_HOME/conf</code> if necessary.</li>
+        </ol>
+        <h2>Enable <span class="api_gateway_variablescassandra">Apache Cassandra</span> debug logging</h2>
+        <p>You can enable Cassandra debug logging using any of the following approaches:</p>
+        <ul>
+            <li value="1"><strong>logback.xml</strong>
+            </li>
+            <li class="list_detail">You can specify a <code>logger</code> in the <code>cassandra/conf/logback.xml</code> configuration file as follows:</li>
+        </ul>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>&lt;logger name "org.apache.cassandra.transport" level=DEBUG/&gt;</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ul>
+            <li value="1"><strong>nodetool</strong>
+            </li>
+            <li class="list_detail">You can use the <code>nodetool setlogginglevel</code> command as follows:
+                </li>
+        </ul>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>nodetool setlogginglevel org.apache.cassandra.transport DEBUG</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ul>
+            <li value="1"><strong>JConsole</strong>
+            </li>
+            <li class="list_detail">The JConsole tool enables you to configure Cassandra logging using JMX. For example, you can invoke <code>setLoggingLevel</code> and specify <code>org.apache.cassandra.db.StorageServiceMBean</code> and <code>DEBUG</code> as parameters. For more details, see the next section.</li>
+        </ul>
+        <p>For more details on enabling logging, see the following, which also applies to Cassandra 2.2:</p>
+        <ul>
+            <li value="1"><a href="https://docs.datastax.com/en/cassandra/2.1/cassandra/configuration/configLoggingLevels_r.html" target="_blank" title="https://docs.datastax.com/en/cassandra/2.1/cassandra/configuration/configLoggingLevels_r.html" alt="https://docs.datastax.com/en/cassandra/2.1/cassandra/configuration/configLoggingLevels_r.html">https://docs.datastax.com/en/cassandra/2.1/cassandra/configuration/configLoggingLevels_r.html</a>
+            </li>
+            <li value="2"><a href="http://thelastpickle.com/blog/2016/02/10/locking-down-apache-cassandra-logging.html" target="_blank" title="http://thelastpickle.com/blog/2016/02/10/locking-down-apache-cassandra-logging.html" alt="http://thelastpickle.com/blog/2016/02/10/locking-down-apache-cassandra-logging.html">http://thelastpickle.com/blog/2016/02/10/locking-down-apache-cassandra-logging.html</a>
+            </li>
+        </ul>
+        <h2><a name="Monitor"></a>Monitor a Cassandra cluster using JMX</h2>
+        <p>You can use Java Management Extensions to monitor and manage performance in a Cassandra cluster. For details, see the <a href="https://docs.datastax.com/en/archived/cassandra/2.2/cassandra/operations/opsMonitoring.html" target="_blank">Monitoring a Cassandra cluster</a> documentation.</p>
+        <h2>Upgrade your Cassandra version</h2>
+        <p>For details on upgrading your Cassandra version, see <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/csh?context=801&amp;product=prod-api-gateway-77">Upgrade Apache Cassandra</a></MadCap:conditionalText> in the 
+            <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIGateway_77_UpgradeGuide_allOS_en_HTML5"><span class="api_gateway_variablesgateway">API Gateway</span> Upgrade Guide</a></MadCap:conditionalText>.</p>
+    </body>
+</html>

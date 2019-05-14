@@ -1,0 +1,1 @@
+define({'skin':{'default':{},'AxwayHTML5':{}},'toc':{'default':{'OpenBookIconAlternateText':'Open Book','ClosedBookIconAlternateText':'Closed Book','TopicIconAlternateText':'Topic Icon','MarkAsNewIconAlternateText':'New Topic'}}});

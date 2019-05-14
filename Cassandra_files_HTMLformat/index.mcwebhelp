@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WebHelpSystem DefaultUrl="Content/CassandraTopics/CassandraStartPage.htm" Toc="Data/Tocs/APIGatewayCassandraAdminGuide.js" Index="Data/Index.js" Concepts="Data/Concepts.js" SearchDatabase="Data/Search.js" Alias="Data/Alias.xml" Synonyms="Data/Synonyms.xml" PathToScriptsFolder="Resources/Scripts/" SkinName="AxwayHTML5" SkinID="AxwayHTML5" Multilingual="false" Skins="AxwayHTML5" BuildTime="5/13/2019 2:22:38 PM" BuildVersion="14.1.6875.33553" TargetType="WebHelp2" SkinTemplateFolder="Skin/" InPreviewMode="false" TopNavTocPath="true" MoveOutputContentToRoot="false" ReplaceReservedCharacters="false" MakeFileLowerCase="false" UseCustomTopicFileExtension="false" PreventExternalUrls="false" EnableResponsiveOutput="false" IncludeGlossarySearchResults="true" ResultsPerPage="20" xml:lang="en-us" LanguageName="English" SearchEngine="MadCapSearch" IncludeCSHRuntime="true" DebugMode="false">
+    <CatapultSkin Version="1" SkinType="WebHelp2" Comment="HTML5 skin" Anchors="Width,Height" Width="800" Height="600" Top="0" Left="0" Bottom="0" Right="0" Tabs="TOC" DefaultTab="TOC" UseBrowserDefaultSize="True" UseDefaultBrowserSetup="True" Title="[%=axway_variables.Component Short Name%]" AutoSyncTOC="true" conditions="axway_conditions.GlobalLinking" Name="AxwayHTML5" SkinID="AxwayHTML5" SkinClass="_Skins_AxwayHTML5" HideNavOnStartup="False" LogoUrl="">
+        <Toolbar EnableCustomLayout="true" Buttons="PreviousTopic|NextTopic|Print">
+            <Script>function moveSearch() {
+    h1Headings = document.getElementsByTagName("h1");
+    for (h = 0; h &lt; h1Headings.length; h++) {
+        h1Heading = h1Headings[h];
+        if (h1Heading.getAttribute("class") == "Search Bar") {
+            h1Heading.setAttribute("style", "margin-right : 200px");
+        }
+    }
+}
+
+window.onload = moveSearch;
+
+
+$(document).ready(function(){
+   $('head').append('&lt;link rel="shortcut icon" href="Content/Resources/Images/favicon.ico" type="image/x-icon" /&gt;');
+});</Script>
+        </Toolbar>
+    </CatapultSkin>
+</WebHelpSystem>

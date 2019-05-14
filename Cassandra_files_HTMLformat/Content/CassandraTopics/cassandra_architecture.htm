@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" lang="en-us" xml:lang="en-us" data-mc-search-type="Stem" data-mc-help-system-file-name="index.xml" data-mc-path-to-help-system="../../" data-mc-target-type="WebHelp2" data-mc-runtime-file-type="Topic" data-mc-preload-images="false" data-mc-in-preview-mode="false" data-mc-toc-path="">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>Cassandra deployment architectures</title>
+        <link rel="shortcut icon" href="../Resources/Images/favicon.ico" />
+        <link href="../../Skins/Default/Stylesheets/Slideshow.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/TextEffects.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/Topic.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/Components/Styles.css" rel="stylesheet" />
+        <link href="../Resources/Stylesheets/axway.css" rel="stylesheet" />
+        <link href="../Resources/TableStyles/SynchTableStyle.css" rel="stylesheet" />
+        <script src="../../Resources/Scripts/custom.modernizr.js">
+        </script>
+        <script src="../../Resources/Scripts/jquery.min.js">
+        </script>
+        <script src="../../Resources/Scripts/require.min.js">
+        </script>
+        <script src="../../Resources/Scripts/require.config.js">
+        </script>
+        <script src="../../Resources/Scripts/foundation.min.js">
+        </script>
+        <script src="../../Resources/Scripts/plugins.min.js">
+        </script>
+        <script src="../../Resources/Scripts/MadCapAll.js">
+        </script>
+    </head>
+    <body>
+        <h1>Cassandra deployment architectures</h1>
+        <p>This topic describes the Cassandra deployment architectures supported by <span class="api_gateway_variablesgateway">API Gateway</span>. The following table provides a summary:</p>
+        <table summary="Operating system requirements" style="mc-table-style: url('../Resources/TableStyles/SynchTableStyle.css');" class="TableStyle-test_SynchTableStyle" cellspacing="0">
+            <col class="Column-Column1" style="width: 189px;" />
+            <col class="Column-Column1" style="width: 440px;" />
+            <col class="Column-Column1" style="width: 270px;" />
+            <thead>
+                <tr class="Head-Header1">
+                    <th class="HeadE-Column1-Header1">Deployment</th>
+                    <th class="HeadE-Column1-Header1">Description</th>
+                    <th class="HeadD-Column1-Header1">Use</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="Body-Body1">
+                    <td class="BodyE-Column1-Body1"><strong>Standalone</strong>
+                    </td>
+                    <td class="BodyE-Column1-Body1">
+                        <p>One <span class="api_gateway_variablesgateway">API Gateway</span> instance only. This is the default.</p>
+                    </td>
+                    <td class="BodyD-Column1-Body1">
+                        <ul>
+                            <li value="1">Development environment</li>
+                            <li value="2">Production environment with one <span class="api_gateway_variablesgateway">API Gateway</span> instance</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr class="Body-Body2" data-mc-conditions="">
+                    <td class="BodyE-Column1-Body2"><strong>High availability with local storage</strong>
+                    </td>
+                    <td class="BodyE-Column1-Body2">
+                        <p>Multiple <span class="api_gateway_variablesgateway">API Gateway</span> instances in a group, each <span class="api_gateway_variablesgateway">API Gateway</span> instance on different hosts, with a Cassandra storage node local to each <span class="api_gateway_variablesgateway">API Gateway</span> host.</p>
+                    </td>
+                    <td class="BodyD-Column1-Body2">
+                        <ul>
+                            <li value="1">Pre-production environment</li>
+                            <li value="2">Production environment </li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr class="Body-Body1">
+                    <td class="BodyB-Column1-Body1"><strong>High availability with remote storage</strong>
+                    </td>
+                    <td class="BodyB-Column1-Body1">Multiple <span class="api_gateway_variablesgateway">API Gateway</span> instances in a group, each <span class="api_gateway_variablesgateway">API Gateway</span> instance on different hosts, with Cassandra storage nodes on remote hosts.</td>
+                    <td class="BodyA-Column1-Body1">
+                        <ul>
+                            <li value="1">Pre-production environment </li>
+                            <li value="2">Production environment </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">You can use one Cassandra cluster to store data from one or multiple <span class="api_gateway_variablesgateway">API Gateway</span> groups and one or multiple  <span class="api_gateway_variablesgateway">API Gateway</span> domains. Your Cassandra topology does not need to match your API Gateway topology.</td>
+            </tr>
+        </table>
+        <p>Multiple <span class="api_gateway_variablesgateway">API Gateway</span> groups can also be deployed on the same host, each host running an <span class="api_gateway_variablesgateway">API Gateway</span> instance for each group. This applies to both local and remote storage.</p>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">Windows is supported  only for a limited set of developer tools. <span class="api_gateway_variablesgateway">API Gateway</span> and <span class="api_gateway_variablesapi_mgr">API Manager</span> do not support Windows. </td>
+            </tr>
+        </table>
+        <p data-mc-conditions="api_gateway_conditions.NoWindows">You can continue using an existing remote Cassandra installation running on Windows that you have configured with your <span class="api_gateway_variablesgateway">API Gateway</span> installation.</p>
+        <p>For details on hosting Cassandra in datacenters, see <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/csh?context=303&amp;product=prod-api-gateway-77">Configure  <span class="api_management_variablesAPIManagementName">API Management</span> in multiple datacenters</a></MadCap:conditionalText> in the 
+            <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIGateway_77_InstallationGuide_allOS_en_HTML5/"><span class="api_gateway_variablesgateway">API Gateway</span> Installation Guide</a></MadCap:conditionalText>.</p>
+        <h2 data-mc-conditions="">Cassandra in standalone mode</h2>
+        <p data-mc-conditions="">Cassandra is configured in non-HA standalone mode when deployed alongside a single <span class="api_gateway_variablesgateway">API Gateway</span> instance on the same host (for example, in a demonstration or development environment with one <span class="api_gateway_variablesgateway">API Gateway</span> instance). This is the default mode.</p>
+        <p data-mc-conditions="">To configure Cassandra in standalone mode, perform the following steps:</p>
+        <ol>
+            <li value="1" data-mc-conditions="">Ensure Cassandra is installed on the local node (along with <span class="api_gateway_variablesgateway">API Gateway</span>). For details, see <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/csh?context=301&amp;product=prod-api-gateway-77">Install an Apache Cassandra database</a></MadCap:conditionalText> in the 
+            <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIGateway_77_InstallationGuide_allOS_en_HTML5/"><span class="api_gateway_variablesgateway">API Gateway</span> Installation Guide</a></MadCap:conditionalText>.</li>
+            <li value="2" data-mc-conditions="">Start Cassandra before starting <span class="api_gateway_variablesgateway">API Gateway</span>. For details, see <a href="cassandra_manage.htm" class="MCXref xref">Manage Apache Cassandra</a>.</li>
+            <li value="3" data-mc-conditions="">Start <span class="api_gateway_variablesgateway">API Gateway</span>. For details, see the <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIGateway_77_InstallationGuide_allOS_en_HTML5/"><span class="api_gateway_variablesgateway">API Gateway</span> Installation Guide</a></MadCap:conditionalText>.</li>
+        </ol>
+        <p data-mc-conditions="">The next steps depend on your installation setup type:</p>
+        <ul>
+            <li value="1" data-mc-conditions="">In a Standard or Complete setup that includes the QuickStart tutorial, the default configuration attempts to connect to Cassandra running on <code>localhost</code>.</li>
+        </ul>
+        <ul>
+            <li value="1" data-mc-conditions="">In a Custom setup without the QuickStart tutorial, you must configure the connection in <span class="suite_variablesPolicyStudioName">Policy Studio</span>. For more details, see <a href="cassandra_manage.htm#Connect" class="MCXref xref">Connect to API Gateway for the first time</a>.</li>
+        </ul>
+        <p>To use Cassandra with <span class="api_gateway_variablesapi_mgr">API Manager</span>, see <a href="cassandra_config.htm#Update2" class="MCXref xref">Configure a highly available Cassandra cluster</a>. This is configured by default when <span class="api_gateway_variablesapi_mgr">API Manager</span> is installed along with the QuickStart tutorial.</p>
+        <p>To use Cassandra with OAuth, see <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/csh?context=400&amp;product=prod-api-gateway-77">Deploy OAuth configuration</a></MadCap:conditionalText> in the <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIGateway_77_OAuthUserGuide_allOS_en_HTML5/"><span class="api_gateway_variablesgateway">API Gateway</span> OAuth User Guide</a></MadCap:conditionalText>.</p>
+        <p data-mc-conditions="">The following diagram shows Cassandra in standalone mode with a default Standard setup:</p>
+        <p>
+            <img src="../Resources/Images/docbook/images/install/cassandra_architecture_standalone.png" class="maxWidth" alt="Cassandra standalone architecture " />
+        </p>
+        <h2 data-mc-conditions=""><a name="Configur4"></a>Cassandra in High Availability mode</h2>
+        <p data-mc-conditions="">For both local and remote Cassandra HA, Cassandra runs on multiple hosts. This section describes both scenarios.</p>
+        <h3 data-mc-conditions=""> HA with local storage</h3>
+        <p data-mc-conditions="">In local Cassandra HA, Cassandra runs alongside <span class="api_gateway_variablesgateway">API Gateway</span> on the same host. This means that you do not need to provision separate host machines for Cassandra and <span class="api_gateway_variablesgateway">API Gateway</span>, or open ports in your firewall. However, the data will be stored in the DMZ.  Local Cassandra HA enables minimum cost of ownership.</p>
+        <p data-mc-conditions="">The following diagram shows local Cassandra HA mode:</p>
+        <p>
+            <img src="../Resources/Images/docbook/images/install/cassandra_architecture_local.png" class="maxWidth" alt="Local Cassandra HA architecture " />
+        </p>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">In this example, one of the Cassandra nodes runs without an <span class="api_gateway_variablesgateway">API Gateway</span> instance on the same host. This is because the minimum deployment architecture includes two <span class="api_gateway_variablesgateway">API Gateway</span> hosts and three Cassandra hosts. If you have three <span class="api_gateway_variablesgateway">API Gateway</span> instances, all Cassandra nodes are local.</td>
+            </tr>
+        </table>
+        <h3 data-mc-conditions=""><a name="HA"></a>HA with remote storage</h3>
+        <p data-mc-conditions="">In remote Cassandra HA, Cassandra runs on a different host from <span class="api_gateway_variablesgateway">API Gateway</span>. The main differences when installing and configuring remote Cassandra are:</p>
+        <ul>
+            <li value="1" data-mc-conditions="">You must provision separate host machines for Cassandra and <span class="api_gateway_variablesgateway">API Gateway</span>. However,  the data can be stored outside the DMZ, and there might be improved performance.</li>
+            <li value="2" data-mc-conditions="">You might need to open ports in the firewall to connect to Cassandra outside the DMZ. For more details, see <a href="cassandra_config.htm#Network" class="MCXref xref">Configure a highly available Cassandra cluster</a>.</li>
+            <li value="3" data-mc-conditions="">You do not have to use the Cassandra component supplied by the <span class="api_gateway_variablesgateway">API Gateway</span> installer.</li>
+            <li value="4" data-mc-conditions="">You can configure the remote node using the <code>setup-cassandra</code> script supplied by the <span class="api_gateway_variablesgateway">API Gateway</span> installation. For more details, see <a href="cassandra_setup_script.htm" class="MCXref xref">setup-cassandra script reference</a>. Alternatively, you can perform all necessary Cassandra configuration changes manually.</li>
+            <li value="5" data-mc-conditions="">You must update the <span class="api_gateway_variablesgateway">API Gateway</span> Cassandra client settings in <span class="api_gateway_variablespolicy_studio">Policy Studio</span> to connect to the remote Cassandra host nodes.</li>
+        </ul>
+        <p data-mc-conditions="">The following diagram shows remote Cassandra HA mode:</p>
+        <p class="bold_in_para">
+            <img src="../Resources/Images/docbook/images/install/cassandra_architecture_remote.png" class="maxWidth" alt="Remote Cassandra HA architecture " />
+        </p>
+        <h3>Cassandra HA configuration</h3>
+        <p>You can use a local or remote Cassandra HA configuration. The example Cassandra HA configuration in the diagrams consists of the following:</p>
+        <ul>
+            <li value="1">Three Cassandra nodes in a single cluster.</li>
+            <li value="2">Three host machines with network addresses: <code>ipA</code> (seed node), <code>ipB</code>, and <code>ipC</code>.</li>
+            <li value="3">Replication factor of <code>3</code>. Each node holds 100% of the data.</li>
+            <li value="4">Default values in <code>cassandra.yaml</code> for:<ul><li value="1">Server-server communication: <br /><code>listen_address</code> set to IP address<br /><code>storage_port</code> set to <code>7000</code><br /><code>ssl_storage_port</code>: <code>7001</code> (when TLS v1.2 is configured)<br /></li><li value="2">Client-server communication:<br /><code>native_transport_port</code> of <code>9042</code></li><li value="3">JMX monitoring on <code>localhost:7199</code></li></ul></li>
+        </ul>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">&#160;</td>
+            </tr>
+        </table>
+        <ul>
+            <li value="1"><code>ipA</code>, <code>ipB</code>, and <code>ipC</code> are placeholders  for real host machines on your network. You can specify IP addresses or host names.</li>
+            <li value="2">You must have at least one designated seed node. Seeds nodes are required at runtime when a node is added to the cluster. You can add more or change designation later.</li>
+            <li value="3">You can change the server-server port, but it must be the same across the cluster.</li>
+            <li value="4">For Cassandra administration, you must gain local access to the host machine (for example, using SSH) to perform administration tasks.  This includes using <code>nodetool</code> to access the Cassandra cluster over JMX.</li>
+        </ul>
+        <h3><span class="api_gateway_variablesgateway">API Gateway</span> configuration</h3>
+        <p><span class="api_gateway_variablesgateway">API Gateway</span> acts as a client of the Cassandra cluster as follows:<br /></p>
+        <ul>
+            <li value="1">Client failover: <br /><span class="api_gateway_variablesgateway">API Gateway</span> can fail over to any of the Cassandra nodes for service. Each <span class="api_gateway_variablesgateway">API Gateway</span> is configured with the connection details of each Cassandra host.</li>
+            <li value="2">Strong consistency: <br />Cassandra read and write consistency levels are both set to <code>QUORUM</code>. This, along with the replication factor of <code>3</code>, enables full availability in the event of one node loss.</li>
+        </ul>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">You can have any number of <span class="api_gateway_variablesgateway">API Gateway</span> instances (all running either locally or remote to Cassandra). However, you must have at least two <span class="api_gateway_variablesgateway">API Gateway</span> instances for HA. This also applies to <span class="api_gateway_variablesapi_mgr">API Manager</span>.</td>
+            </tr>
+        </table>
+        <p data-mc-conditions="">For more details on Cassandra HA configuration, see <a href="cassandra_config.htm" class="MCXref xref">Configure a highly available Cassandra cluster</a>.</p>
+    </body>
+</html>

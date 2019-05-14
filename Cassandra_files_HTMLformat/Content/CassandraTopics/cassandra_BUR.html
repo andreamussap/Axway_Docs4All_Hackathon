@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" lang="en-us" xml:lang="en-us" data-mc-search-type="Stem" data-mc-help-system-file-name="index.xml" data-mc-path-to-help-system="../../" data-mc-target-type="WebHelp2" data-mc-runtime-file-type="Topic" data-mc-preload-images="false" data-mc-in-preview-mode="false" data-mc-toc-path="">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>Apache Cassandra backup and restore</title>
+        <link rel="shortcut icon" href="../Resources/Images/favicon.ico" />
+        <link href="../../Skins/Default/Stylesheets/Slideshow.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/TextEffects.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/Topic.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/Components/Styles.css" rel="stylesheet" />
+        <link href="../Resources/Stylesheets/axway.css" rel="stylesheet" />
+        <link href="../Resources/TableStyles/code_window.css" rel="stylesheet" />
+        <script src="../../Resources/Scripts/custom.modernizr.js">
+        </script>
+        <script src="../../Resources/Scripts/jquery.min.js">
+        </script>
+        <script src="../../Resources/Scripts/require.min.js">
+        </script>
+        <script src="../../Resources/Scripts/require.config.js">
+        </script>
+        <script src="../../Resources/Scripts/foundation.min.js">
+        </script>
+        <script src="../../Resources/Scripts/plugins.min.js">
+        </script>
+        <script src="../../Resources/Scripts/MadCapAll.js">
+        </script>
+    </head>
+    <body>
+        <h1><span class="api_gateway_variablescassandra">Apache Cassandra</span> backup and restore</h1>
+        <p>In an <span class="api_gateway_variablescassandra">Apache Cassandra</span> database cluster, data is replicated between multiple nodes and potentially between multiple datacenters. Cassandra is highly fault-tolerant, and depending on the size of the cluster, it can survive the failure of one or more nodes without any interruption in service. However, backups are still needed to recover from the following scenarios:</p>
+        <ul>
+            <li value="1">Any errors made in data by client applications</li>
+            <li value="2">Accidental deletions</li>
+            <li value="3">Catastrophic failure that requires a rebuild of the entire cluster</li>
+            <li value="4">Rollback of the cluster to a known good state in the event of data corruption</li>
+        </ul>
+        <p>This topic describes which <span class="api_gateway_variablescassandra">Apache Cassandra</span> data keyspaces to back up, and explains how to use scripts to create and restore the data in those keyspaces. It also describes which <span class="api_gateway_variablescassandra">Apache Cassandra</span> configuration and <span class="api_gateway_variablesgateway">API Gateway</span> configuration to back up.</p>
+        <h2>Before you begin</h2>
+        <table class="AutoNumber_p_caution" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 20px;" />
+            <col style="width: 75px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Caution &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_caution" valign="top" data-mc-autonum="&lt;b&gt;Caution &#160;&lt;/b&gt;">You must read all of the following before you perform any of the instructions in this topic:</td>
+            </tr>
+        </table>
+        <ul>
+            <li value="1">These instructions apply only to an <span class="api_gateway_variablescassandra">Apache Cassandra</span> cluster where the replication factor is the same as the cluster size, which means that each node contains 100% of the data. This is the standard configuration for <span class="axway_variablesCompany Name">Axway</span> <span class="api_management_variablesAPIManagementName">API Management</span> processes, and these instructions are intended to back up <span class="api_management_variablesAPIManagementName">API Management</span> keyspaces only.</li>
+            <li value="2">Because 100% of the data is stored on each node, you will run the backup procedure on a single node only, preferably on the seed node.</li>
+            <li value="3">The following instructions and scripts are intended as a starting point and must be customized and automated as needed to match your backup polices and environment.</li>
+            <li value="4">These instructions use the Cassandra snapshot functionality. A <em>snapshot</em> is a set of hard links for the current data files in a keyspace.<br /></li>
+        </ul>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">While the snapshot does not take up noticeable diskspace, it will cause stale data files not to be cleaned up. This is because a snapshot directory is created under each table directory and will contain hard links to all table data files.<br />When Cassandra cleans up the stale table data files, the snapshot files will remain. Therefore, it is critical to remove them promptly. The example backup script  takes care of this by deleting the snapshot files at the end of the backup.</td>
+            </tr>
+        </table>
+        <ul>
+            <li value="1">For safety reasons, the backup location should <em>not</em> be on the same disk as the Cassandra data directory, and it also must have enough free space to contain the keyspace.</li>
+        </ul>
+        <h2>Which  data keyspaces to back up?</h2>
+        <p>These procedures apply  to data in <span class="api_management_variablesAPIManagementName">API Management</span> and KPS keyspaces only. You must first obtain a list of the keyspace names to back up. <span class="api_management_variablesAPIManagementName">API Management</span> keyspaces may have a custom name defined, but are named in the format of <code>&lt;UUID&gt;_group_[n]</code> by default. For example:</p>
+        <table style="mc-table-style: url('../Resources/TableStyles/code_window.css');" class="TableStyle-code_window" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre xml:space="preserve">x9fa003e2_d975_4a4a_a27e_280ab7fd8a5_group_2p_2</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">All Cassandra internal keyspaces begin with <code>system</code>, and should not be backed up using  this process.</td>
+            </tr>
+        </table>
+        <p>You can do this using <code>cqlsh</code> or <code>kpsadmin</code> commands:</p>
+        <h3>Find keyspaces using cqlsh</h3>
+        <p>Using <code>cqlsh</code>, execute the following command:</p>
+        <table style="mc-table-style: url('../Resources/TableStyles/code_window.css');" class="TableStyle-code_window" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre xml:space="preserve">SELECT * from system.schema_keyspaces;</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>In the following example, <code>xxx_group_2</code> and <code>xxx_group_3</code> are <span class="api_management_variablesAPIManagementName">API Management</span> keyspaces:</p>
+        <p>
+            <img src="../Resources/Images/CassandraAdminGuide/cqlsh_keyspace.png" alt="" />
+        </p>
+        <h3>Find keyspaces using kpsadmin</h3>
+        <p>Using <code>kpsadmin</code>, choose: <code>option 30) Show Configuration</code>, and enter the <span class="api_gateway_variablesgateway">API Gateway</span> group and any instance to back up, or use the command line, as shown in the following example:</p>
+        <p>
+            <img src="../Resources/Images/CassandraAdminGuide/kpsadmin_keyspace.png" alt="" />
+        </p>
+        <h2><a name="Back"></a>Back up a keyspace</h2>
+        <p>To back up a keyspace, you will use the <code>nodetool snapshot</code> command to create hard links, run a custom script to back up these links, and then archive that backup.</p>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">You must repeat these steps for each keyspace to back up.</td>
+            </tr>
+        </table>
+        <ol>
+            <li value="1">Create a snapshot by running the following command on the seed node:</li>
+        </ol>
+        <table style="mc-table-style: url('../Resources/TableStyles/code_window.css');" class="TableStyle-code_window" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre>nodetool CONNECTION_PARMS snapshot -t SNAPSHOT_NAME-TIMESTAMP API_GW_KEYSPACE_NAME</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ol data-mc-continue="true">
+            <li class="list_detail">For example:&#160;</li>
+        </ol>
+        <p>
+            <img src="../Resources/Images/CassandraAdminGuide/nodetool_snapshot.png" alt="" />
+        </p>
+        <ol start="2">
+            <li value="2">Run the following script to copy the snapshot files to another location:&#160;</li>
+        </ol>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">This script also clears the snapshot files from the Cassandra <code>data</code> directory.</td>
+            </tr>
+        </table>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre xml:space="preserve">#!/bin/bash
+################################################################################
+# Sample Cassandra snapshot backup script                                      #
+# NOTE: This MUST be adapted for and validated in your environment before use! #
+################################################################################</pre><pre xml:space="preserve">set -e
+trap '[ "$?" -eq 0 ] || echo \*\*\* FATAL ERROR \*\*\*' EXIT $?</pre><pre xml:space="preserve"># Replace the xxx values below to match your environment
+CASSANDRA_DATA_DIR="xxx"
+KEYSPACE_NAME="xxx"
+SNAPSHOT_NAME="xxx"
+BACKUP_ROOT_DIR="xxx"</pre><pre xml:space="preserve"># Example:
+#  CASSANDRA_DATA_DIR="/opt/cassandra/data/data"
+#  KEYSPACE_NAME="x9fa003e2_d975_4a4a_a27e_280ab7fd8a5_group_2"
+#  SNAPSHOT_NAME="Group2-20181127_2144_28"
+#  BACKUP_ROOT_DIR="/backup/cassandra-snapshots"
+</pre><pre xml:space="preserve">##### Do NOT change anything below this line #####
+backupdir="${BACKUP_ROOT_DIR}/${SNAPSHOT_NAME}"
+if [ -d "${backupdir}" ]; then echo -e "\nERROR: Snapshot '${SNAPSHOT_NAME}' already exists in the backup dir";exit 1; fi
+mkdir -p ${backupdir}
+keyspace_path="${CASSANDRA_DATA_DIR}/${KEYSPACE_NAME}"
+if ! [ -d "${keyspace_path}" ]; then echo -e "\nERROR: Keyspace path '${keyspace_path}' is not valid";exit 1; fi</pre><pre>snapshot_dirs=()</pre><pre xml:space="preserve">find "${keyspace_path}/" -maxdepth 1 -mindepth 1 -type d ! -name "$(printf "*\n*")" &gt; backup.tmp
+while IFS= read -r table_dir
+do
+  str=${table_dir##*/}
+  table_uuid=${str##*-}
+  len=$((${#str} - ${#table_uuid} - 1))
+  table_name=${str:0:${len}}
+  echo "Copy table, $table_name"
+  current_backup_dir="${backupdir}/${table_name}"
+  mkdir -p "${current_backup_dir}"
+  current_snapshot="${table_dir}/snapshots/${SNAPSHOT_NAME}"
+  snapshot_dirs+=("${current_snapshot}")
+  cp -r -a "${current_snapshot}"/* "${current_backup_dir}/"
+done &lt; backup.tmp
+rm backup.tmp</pre><pre xml:space="preserve">echo -e "\nRemoving snapshot files from Cassandra data directory"
+for dir in "${snapshot_dirs[@]}"
+do
+  rm -rf "${dir}"
+done</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>When this script finishes, it creates the following backup directory structure:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre>&lt;BACKUP_ROOT_DIR&gt;
+├── &lt;SNAPSHOT_NAME&gt;
+│ ├── &lt;TABLE_NAME&gt;
+│ │  ├── &lt;SNAPSHOT_FILES&gt;
+│ ├── &lt;TABLE_NAME&gt;
+│ │  ├── &lt;SNAPSHOT FILES&gt;
+│ │...
+</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ol data-mc-continue="true">
+            <li value="3">Archive the <code>SNAPSHOT_NAME</code> directory using your company's archive method so you can restore it later if needed.</li>
+        </ol>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">It is best to take a snapshot backup on a daily basis.</td>
+            </tr>
+        </table>
+        <h2>Restore a keyspace</h2>
+        <p>This section explains how to restore <span class="api_management_variablesAPIManagementName">API Management</span> and KPS keyspaces and provides an example script to restore the files.</p>
+        <h3>Before you begin</h3>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">If you are restoring a keyspace to the same cluster that the backup was taken from, skip to <a href="#Restore" class="MCXref xref">Steps to restore a keyspace</a>.</td>
+            </tr>
+        </table>
+        <p>Before you restore a keyspace in a new Cassandra cluster, you must ensure the following:</p>
+        <ul>
+            <li value="1">The Cassandra cluster must be created to the <span class="api_gateway_variablesgateway">API Gateway</span> HA specifications. For more details, see <a href="cassandra_config.htm" class="MCXref xref">Configure a highly available Cassandra cluster</a>.</li>
+            <li value="2">All <span class="api_gateway_variablesgateway">API Gateway</span> groups must have their schema created in the new cluster, and the replication factor must be the same as the cluster size (normally 3).</li>
+            <li value="3">If the keyspace name has changed in the new cluster, use the new name in the <code>KEYSPACE_NAME</code> variable in the restore script.</li>
+        </ul>
+        <h3><a name="Restore"></a>Steps to restore a keyspace</h3>
+        <ol>
+            <li value="1">Shut down all <span class="api_gateway_variablesgateway">API Gateway</span> instances and any other clients in the Cassandra cluster.</li>
+            <li value="2">Drain and shut down each Cassandra node in the cluster, one node at a time.</li>
+        </ol>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">You must execute the following (and wait for it to complete) on each Cassandra node before shutting it down, otherwise data loss may occur:</td>
+            </tr>
+        </table>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre>nodetool CONNECTION_PARMS drain</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ol data-mc-continue="true">
+            <li value="3">On the Cassandra seed node, delete all files in the <code>commitlog</code> and <code>saved_caches</code> directory. For example:</li>
+        </ol>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre>rm -r /opt/cassandra/data/commitlog/* /opt/cassandra/data/saved_caches/*</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">Do not delete any folders in the keyspace folder on the node being restored. The restore script requires the table directories to be present in order to function correctly.</td>
+            </tr>
+        </table>
+        <ol data-mc-continue="true">
+            <li value="4">On the Cassandra seed node, run the following script to restore the snapshot files taken by the backup process and script (described in <a href="#Back" class="MCXref xref">Back up a keyspace</a>):</li>
+        </ol>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre xml:space="preserve">#!/bin/bash
+################################################################################
+# Sample Cassandra restore snapshot script                                     #
+# NOTE: This MUST be adapted for and validated in your environment before use! #
+################################################################################</pre><pre xml:space="preserve"># Replace the xxx values below to match your environment
+CASSANDRA_DATA_DIR="xxx"
+KEYSPACE_NAME="xxx"
+SNAPSHOT_NAME="xxx"
+BACKUP_ROOT_DIR="xxx"</pre><pre xml:space="preserve"># Example:
+#  CASSANDRA_DATA_DIR="/opt/cassandra/data/data"
+#  KEYSPACE_NAME="x9fa003e2_d975_4a4a_a27e_280ab7fd8a5_group_2"
+#  SNAPSHOT_NAME="Group2-20181127_2144_28"
+#  BACKUP_ROOT_DIR="/backup/cassandra-snapshots"</pre><pre xml:space="preserve">
+##### Do NOT change anything below this line #####
+backupdir="${BACKUP_ROOT_DIR}/${SNAPSHOT_NAME}"
+keyspace_path="${CASSANDRA_DATA_DIR}/${KEYSPACE_NAME}"
+echo -e "\n\tRestoring tables from directory, '${backupdir}', to directory, '${keyspace_path}'"
+echo -e "\tRestore snapshot, '${SNAPSHOT_NAME}', to keyspace, '${KEYSPACE_NAME}'"
+read -n 1 -p "Continue (y/n)?" answer
+echo -e "\n"
+if [ "$answer" != "y" ] &amp;&amp; [ "$answer" != "Y" ]; then
+  exit 1
+fi</pre><pre xml:space="preserve">set -e
+trap '[ "$?" -eq 0 ] || echo \*\*\* FATAL ERROR \*\*\*' EXIT $?</pre><pre xml:space="preserve">if ! [ -d "${backupdir}" ]; then echo -e "\nERROR: Backup not found at '${backupdir}'";exit 1; fi
+if ! [ -d "${keyspace_path}" ]; then echo -e "\nERROR: Keyspace path '${keyspace_path}' is not valid";exit 1; fi</pre><pre xml:space="preserve">
+keyspace_tables=$(mktemp)
+find "${keyspace_path}/" -maxdepth 1 -mindepth 1 -type d -fprintf ${keyspace_tables} "%f\n"
+sort -o ${keyspace_tables} ${keyspace_tables}</pre><pre xml:space="preserve">backup_tablenames=$(mktemp)
+find "${backupdir}/" -maxdepth 1 -mindepth 1 -type d -fprintf ${backup_tablenames} "%f\n"
+sort -o ${backup_tablenames} ${backup_tablenames}</pre><pre xml:space="preserve">keyspace_tablenames=$(mktemp)
+table_names=()
+table_uuids=()
+while IFS= read -r table
+do
+  str=${table##*/}
+  uuid=${str##*-}
+  len=$((${#str} - ${#uuid} - 1))
+  name=${str:0:${len}}
+&#160;&#160;echo "${name}" &gt;&gt; ${keyspace_tablenames}
+  table_names+=(${name})
+  table_uuids+=(${uuid})
+done &lt; ${keyspace_tables}</pre><pre xml:space="preserve">set +e
+diff -a -q ${keyspace_tablenames} ${backup_tablenames}
+if [ $? -ne 0 ]; then
+  echo -e "\nERROR: The tables on the keyspace at, '${keyspace_path}', are not the same as the ones from the backup at, 
+'${backupdir}'"
+  exit 1
+fi</pre><pre xml:space="preserve">for ((i=0; i&lt;${#table_names[*]}; i++));
+do
+  echo "Restoring table, '${table_names[i]}'"
+  table_dir="${keyspace_path}/${table_names[i]}-${table_uuids[i]}"
+  rm -r "${table_dir}"
+  mkdir "${table_dir}"
+  src="${backupdir}/${table_names[i]}"
+  cp -r -a "${src}"/* "${table_dir}/"
+done</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ol data-mc-continue="true">
+            <li value="5">On the other nodes in the cluster, perform the following: </li>
+            <li class="list_detail">
+                <ul>
+                    <li value="1">Delete all files in the <code>commitlog</code> and <code>saved_caches</code> directory.</li>
+                    <li value="2">Delete all files in the <code>KEYSPACE</code> being restored under the <code>CASSANDRA_DATA_DIRECTORY</code>. For example:</li>
+                </ul>
+            </li>
+        </ol>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre>rm -rf /opt/cassandra/data/data/x9fa003e2_d975_4a4a_a27e_280ab7fd8a5_group_2/*</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ol start="6">
+            <li value="6">If you have other keyspaces to restore, return to step 4 and repeat. Otherwise, continue to the next steps.</li>
+            <li value="7">One at a time, start the Cassandra seed node, and then the other nodes, and wait for each to be in Up/Normal (<code>UN</code>) state in <code>nodetool status</code> before you proceed to the next node.</li>
+            <li value="8">Perform a full repair of the cluster as follows on each node one at a time:<br /></li>
+        </ol>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre>nodetool repair -pr --full</pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ol start="6" data-mc-continue="true">
+            <li value="9">Start the <span class="api_gateway_variablesgateway">API Gateway</span> instances.</li>
+        </ol>
+        <h2>Which  configuration to back up?</h2>
+        <p>In addition to backing up your data in <span class="api_gateway_variablescassandra">Apache Cassandra</span> keyspaces, you must also back up your <span class="api_gateway_variablescassandra">Apache Cassandra</span> configuration and <span class="api_gateway_variablesgateway">API Gateway</span> configuration.</p>
+        <h3><span class="api_gateway_variablescassandra">Apache Cassandra</span> configuration</h3>
+        <p>You must back up the <code>CASSANDRA_HOME/conf</code> directory on all nodes.</p>
+        <h3><span class="api_gateway_variablesgateway">API Gateway</span> group configuration</h3>
+        <p>You must  back up the&#160;<span class="api_gateway_variablesgateway">API Gateway</span> group configuration in&#160;the following directory:</p>
+        <table style="mc-table-style: url('../Resources/TableStyles/code_window.css');" class="TableStyle-code_window" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1"><pre xml:space="preserve">API_GW_INSTALL_DIR/<span class="api_gateway_variableslc_product">apigateway</span>/groups/&lt;group-name&gt;/conf<br /></pre>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>This directory contains the&#160;<span class="api_gateway_variablesgateway">API Gateway</span>,&#160;<span class="api_gateway_variablesapi_mgr">API Manager</span>, and KPS configuration data.</p>
+    </body>
+</html>

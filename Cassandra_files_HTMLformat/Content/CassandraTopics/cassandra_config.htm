@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" lang="en-us" xml:lang="en-us" data-mc-search-type="Stem" data-mc-help-system-file-name="index.xml" data-mc-path-to-help-system="../../" data-mc-target-type="WebHelp2" data-mc-runtime-file-type="Topic" data-mc-preload-images="false" data-mc-in-preview-mode="false" data-mc-toc-path="">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>Configure a highly available Cassandra cluster</title>
+        <link rel="shortcut icon" href="../Resources/Images/favicon.ico" />
+        <link href="../../Skins/Default/Stylesheets/Slideshow.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/TextEffects.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/Topic.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/Components/Styles.css" rel="stylesheet" />
+        <link href="../Resources/Stylesheets/axway.css" rel="stylesheet" />
+        <link href="../Resources/TableStyles/code_window.css" rel="stylesheet" />
+        <script src="../../Resources/Scripts/custom.modernizr.js">
+        </script>
+        <script src="../../Resources/Scripts/jquery.min.js">
+        </script>
+        <script src="../../Resources/Scripts/require.min.js">
+        </script>
+        <script src="../../Resources/Scripts/require.config.js">
+        </script>
+        <script src="../../Resources/Scripts/foundation.min.js">
+        </script>
+        <script src="../../Resources/Scripts/plugins.min.js">
+        </script>
+        <script src="../../Resources/Scripts/MadCapAll.js">
+        </script>
+    </head>
+    <body>
+        <h1><a name="top"></a>Configure a highly available Cassandra cluster</h1>
+        <p>This topic describes how to set up an Apache Cassandra database cluster for  high availability (HA) of your <span class="api_gateway_variablesgateway">API Gateway</span> system.</p>
+        <h2>Cassandra HA in a production environment</h2>
+        <p>To tolerate the loss of one Cassandra node and to ensure 100% data consistency, <span class="api_gateway_variablesgateway">API Gateway</span> requires at a minimum the following Cassandra cluster configuration running in a production class environment:</p>
+        <ul>
+            <li value="1">Three Cassandra nodes (with one seed node)</li>
+            <li value="2"><code>QUORUM</code> read/write consistency to ensure that you are reading from a quorum of Cassandra nodes (two) every time</li>
+            <table class="AutoNumber_p_caution" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                <col style="width: 20px;" />
+                <col style="width: 75px;" />
+                <col style="width: auto;" />
+                <tr>
+                    <td valign="top" />
+                    <td class="AutoNumber_p_note" valign="top"><span><b>Caution &#160;</b></span>
+                    </td>
+                    <td class="AutoNumber_p_caution" valign="top" data-mc-autonum="&lt;b&gt;Caution &#160;&lt;/b&gt;">Eventual consistency is not supported in a production environment due to a risk of stale or missing data</td>
+                </tr>
+            </table>
+            <li value="3"><code>Replication factor</code> setting set to <code>3</code>, so each node holds 100% of the data</li>
+        </ul>
+        <p>If one Cassandra node fails or needs to be restarted, the cluster continues to operate with the remaining two nodes. This configuration applies to all supported use cases (for example, <span class="suite_variablesAPIManagerName">API Manager</span> and <span class="api_gateway_variablesgateway">API Gateway</span> custom  KPS, OAuth, and client registry data).</p>
+        <h3>Preparing a Cassandra HA environment</h3>
+        <p>The following general guidelines apply to configuring a Cassandra HA cluster:</p>
+        <ul>
+            <li value="1" data-mc-conditions="">Decide on the number of Cassandra nodes, and  install and configure the Cassandra database on each node.</li>
+            <li value="2" data-mc-conditions="">Decide on the number of <span class="api_gateway_variablesgateway">API Gateway</span> nodes, and install and configure them (local or remote to Cassandra).</li>
+            <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                <col style="width: 23px;" />
+                <col style="width: 47px;" />
+                <col style="width: auto;" />
+                <tr>
+                    <td valign="top" />
+                    <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                    </td>
+                    <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">It is recommended that you configure a Cassandra HA&#160;cluster with three Cassandra nodes, and at least two <span class="api_gateway_variablesgateway">API Gateway</span>  instances (local or remote). For details, see <a href="cassandra_architecture.htm" class="MCXref xref">Cassandra deployment architectures</a>.</td>
+                </tr>
+            </table>
+            <li value="3">Create a HA API Gateway environment.</li>
+            <li value="4" data-mc-conditions=""> Configure the Cassandra client settings in <span class="api_gateway_variablespolicy_studio">Policy Studio</span> for the <span class="api_gateway_variablesgateway">API Gateway</span> group.</li>
+        </ul>
+        <p>For details on how to install an <span class="api_gateway_variablescassandra">Apache Cassandra</span> database or how to create a HA <span class="api_gateway_variablesgateway">API Gateway</span> environment, see <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIGateway_77_InstallationGuide_allOS_en_HTML5/"><span class="api_gateway_variablesgateway">API Gateway</span> Installation Guide</a></MadCap:conditionalText>. </p>
+        <h2 data-mc-conditions=""><a name="Example"></a>Example of a HA setup using three Cassandra nodes</h2>
+        <p>This section shows how to configure a three nodes Cassandra HA cluster.</p>
+        <h3>Configure the Cassandra seed node</h3>
+        <p>Perform the following steps to configure a <em>seed</em> node:</p>
+        <ol>
+            <li value="1">Assign one of the nodes as the <em>seed</em> node,  and connect to it via SSH.</li>
+            <li value="2">Update the <code><em>CASSANDRA_HOME</em>/conf/cassandra.yaml</code> file manually or using the <code>setup-cassandra</code> script.<br />Manually:</li>
+            <!--<li class="list_detail">-->
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">seed_provider, parameters, seeds: IP_SEED_NODE<br />start_native_transport: true<br />start_rpc: false<br />native_transport_port: 9042<br />listen_address:  IP_SEED_NODE<br />rpc_address: IP_SEED_NODE<br />authenticator: org.apache.cassandra.auth.PasswordAuthenticator<br />authorizer: org.apache.cassandra.auth.CassandraAuthorizer</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!--</li>-->
+            <li class="list_detail">Using the <code>setup-cassandra</code> script:</li>
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                            <p>setup-cassandra --seed --own-ip=&lt;IP_SEED_NODE&gt; --nodes=3 --cassandra-config=<em>CONFIG_FILE</em></p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <li value="3">Start Cassandra.</li>
+            <li value="4">Verify the  <code>CASSANDRA_HOME/logs/system.log</code> does not contain any errors or warnings.</li>
+            <li value="5">Run the <code>nodetool status</code> command to verify that <em>one</em> node is present in <code>UN</code> status, and that the IP address is correct.</li>
+        </ol>
+        <h3>Configure the  additional Cassandra nodes</h3>
+        <p>The procedure to configure additional nodes uses the <code>seed</code> node that you have  previously  configured.</p>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">
+                    <n>You must repeat these steps for each additional node.</n>
+                </td>
+            </tr>
+        </table>
+        <ol>
+            <li value="1">Connect to the additional node via SSH, and update the <code><em>CASSANDRA_HOME</em>/conf/cassandra.yaml</code> file.<br />Manually:</li>
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">seed_provider, parameters, seeds: IP_SEED_NODE<br />					start_native_transport: true<br />start_rpc: false<br />native_transport_port: 9042<br />listen_address:  IP_NODE_N<br />rpc_address:  IP_NODE_N<br />authenticator: org.apache.cassandra.auth.PasswordAuthenticator<br />authorizer: org.apache.cassandra.auth.CassandraAuthorizer</td>
+                    </tr>
+                </tbody>
+            </table>
+            <li class="list_detail">Using the <code>setup-cassandra</code> script:</li>
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                            <p>setup-cassandra --seed-ip=&lt;IP_SEED_NODE&gt; --own-ip=&lt;IP_NODE_n&gt; --cassandra-config=&lt;PATH_TO_CASSANDRA.YAML&gt;</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <li value="2">Start Cassandra. <br /></li>
+            <li value="3">Verify the  <code>CASSANDRA_HOME/logs/system.log</code> does not contain any errors or warnings.</li>
+            <li value="4">Run the <code>nodetool status</code> command to verify that the <em>new</em> node is present in <code>UN</code> status, and that the IP address is correct.</li>
+        </ol>
+        <!-- section 3. Create a new cassandra database user  -->
+        <h3>Create a new Cassandra database user</h3>
+        <p>From the command line, execute the following commands to create a new user:</p>
+        <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+            <col class="TableStyle-code_window-Column-Column1" />
+            <tbody>
+                <tr class="TableStyle-code_window-Body-Body1">
+                    <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                        <p>&gt;./cqlsh &lt;IP_NODE_1&gt; -u cassandra -p cassandra </p>
+                        <p>&gt; ALTER KEYSPACE "system_auth" WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor': 3 };</p>
+                        <p>&gt; CREATE USER &lt;USERNAME&gt; WITH PASSWORD '&lt;PASSWORD&gt;' SUPERUSER;</p>
+                        <p>&gt; QUIT;</p>
+                        <p>&gt;./cqlsh &lt;IP_NODE_1&gt; -u &lt;ADMIN_USERNAME&gt; -p &lt;PASSWORD&gt;</p>
+                        <p>&gt; ALTER USER cassandra WITH PASSWORD '&lt;PASSWORD&gt;' NOSUPERUSER;</p>
+                        <p>&gt; QUIT</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- 4. Configure the API Gateway Cassandra client connection  -->
+        <h3>Configure the <span class="api_gateway_variablesgateway">API Gateway</span> Cassandra client connection</h3>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">This section assumes that you have already set up a HA API Gateway environment. For details, see <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIGateway_77_AdministratorGuide_allOS_en_HTML5/"><span class="api_gateway_variablesgateway">API Gateway</span> Administrator Guide</a></MadCap:conditionalText></td>
+            </tr>
+        </table>
+        <p>In <span class="api_gateway_variablespolicy_studio">Policy Studio</span>, open your <span class="api_gateway_variablesgateway">API Gateway</span> group configuration.</p>
+        <ol>
+            <li value="1">Select <strong>Server Settings &gt; Cassandra &gt; Authentication</strong>, and enter the cassandra database user name and password.</li>
+            <li value="2">Select <strong>Server Settings &gt; Cassandra &gt; Hosts</strong>, and add a host for each Cassandra node in the cluster. </li>
+            <li value="3">Select <strong>Server Settings &gt; Cassandra &gt; Keyspace</strong>, and set the <strong>Initial replication factor</strong> option to <code>3</code>.</li>
+            <li value="4">Deploy the configuration to the group.</li>
+        </ol>
+        <!-- to be removed-->
+        <h2>Configure the client settings for <span class="api_gateway_variablesgateway">API Gateway</span> or <span class="api_gateway_variablesapi_mgr">API Manager</span></h2>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">You need at least two <span class="api_gateway_variablesgateway">API Gateway</span>s in a group for  HA.</td>
+            </tr>
+        </table>
+        <p>This section describes the following options:</p>
+        <ul>
+            <li value="1"><a href="#APIGWClient" class="MCXref xref">Configure API Gateway Cassandra client settings </a>
+            </li>
+            <li value="2"><a href="#APIMngrClient" class="MCXref xref">Configure API Manager Cassandra client settings</a>
+            </li>
+        </ul>
+        <h3 data-mc-conditions=""><a name="APIGWClient"></a>Configure <span class="api_gateway_variablesgateway">API Gateway</span> Cassandra client settings </h3>
+        <p>To update the Cassandra client configuration for <span class="api_gateway_variablesgateway">API Gateway</span>, perform the following steps:</p>
+        <h4><a name="Configur5"></a>Configure the <span class="api_gateway_variablesgateway">API Gateway</span> domain</h4>
+        <ol>
+            <li value="1">Ensure <span class="api_gateway_variablesgateway">API Gateway</span> has been installed on the <span class="api_gateway_variablesgateway">API Gateway</span> 1 and <span class="api_gateway_variablesgateway">API Gateway</span> 2 nodes. For details, see the <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIGateway_77_InstallationGuide_allOS_en_HTML5/"><span class="api_gateway_variablesgateway">API Gateway</span> Installation Guide</a></MadCap:conditionalText>.</li>
+            <li value="2">Ensure an <span class="api_gateway_variablesgateway">API Gateway</span> domain has been created on the <span class="api_gateway_variablesgateway">API Gateway</span> 1 node using <code><span class="api_gateway_variablesdomain_script">managedomain</span></code>. For more details, see <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/csh?context=102&amp;product=prod-api-gateway-77">Configure an <span class="api_gateway_variablesgateway">API Gateway</span> domain</a></MadCap:conditionalText> in the 
+            <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIGateway_77_AdministratorGuide_allOS_en_HTML5/"><span class="api_gateway_variablesgateway">API Gateway</span> Administrator Guide</a></MadCap:conditionalText>.</li>
+        </ol>
+        <h4><a name="Configur6"></a>Configure the <span class="api_gateway_variablesgateway">API Gateway</span> Cassandra client connection</h4>
+        <ol>
+            <li value="1">In <span class="api_gateway_variablespolicy_studio">Policy Studio</span>, open your <span class="api_gateway_variablesgateway">API Gateway</span> group configuration.</li>
+            <li value="2">Select <strong>Server Settings &gt; Cassandra &gt; Authentication</strong>, and enter your Cassandra user name and password (both default to <code>cassandra</code>).</li>
+            <li value="3">Select <strong>Server Settings &gt; Cassandra &gt; Hosts</strong>, and add an address for each Cassandra node in the cluster (<code>ipA</code>, <code>ipB</code> and <code>ipC</code> in this example).</li>
+        </ol>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Tip &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Tip &#160;&lt;/b&gt;">You can automate these steps by running the <code>updateCassandraSettings.py</code> script against a deployment package (<code>.fed</code>). For more details, see <a href="#Automate" class="MCXref xref">Configure a highly available Cassandra cluster</a>.</td>
+            </tr>
+        </table>
+        <h4><a name="Configur7"></a>Configure the <span class="api_gateway_variablesgateway">API Gateway</span> Cassandra consistency levels</h4>
+        <ol start="1">
+            <li value="1">Ensure that the <strong>API Server</strong> KPS collection has been created under <strong>Environment Configuration &gt; Key Property Stores</strong>. This is required to configure Cassandra consistency levels, and is created automatically if you installed the <strong>Complete</strong> setup type. </li>
+            <li class="list_detail">&#160;If you installed the <strong>Custom</strong> or <strong>Standard</strong> setup, you must configure OAuth or <span class="api_gateway_variablesapi_mgr">API Manager</span> settings in <span class="api_gateway_variablespolicy_studio">Policy Studio</span> to create the required KPS collections. For more details, see:<ul data-mc-continue="true"><li value="1"><MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/csh?context=400&amp;product=prod-api-gateway-77">Deploy OAuth configuration</a></MadCap:conditionalText> in the <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIGateway_77_OAuthUserGuide_allOS_en_HTML5/"><span class="api_gateway_variablesgateway">API Gateway</span> OAuth User Guide</a></MadCap:conditionalText></li><li value="2"><a href="#APIMngrClient" class="MCXref xref">Configure API Manager Cassandra client settings</a></li></ul></li>
+            <li value="2">Select <strong>Environment Configuration &gt; Key Property Stores &gt; API Server &gt; Data Sources &gt; Cassandra Storage</strong>, and click <strong>Edit</strong>.</li>
+            <li value="3">In the <strong>Read Consistency Level</strong> and <strong>Write Consistency Level</strong> fields, select <strong>QUORUM</strong>:</li>
+            <li class="list_detail">
+                <ul data-mc-continue="true">
+                    <li class="list_detail">
+                        <img src="../Resources/Images/docbook/images/api_mgmt/api_mgmt_embedded_kps.png" class="smallWidth" alt="" />
+                    </li>
+                </ul>
+            </li>
+        </ol>
+        <ol data-mc-continue="true">
+            <li value="4">Repeat this step for each KPS collection using Cassandra (for example, <strong>Key Property Stores &gt; OAuth</strong>, or <strong><span class="suite_variablesAPIPortalName">API Portal</span></strong> for <span class="api_gateway_variablesapi_mgr">API Manager</span>). This also applies to any custom KPS collections that you have created.</li>
+            <li value="5">If you are using OAuth and Cassandra, you must also configure quorum consistency for all OAuth2 stores under <strong>Libraries &gt; OAuth2 Stores</strong>:<ul><li value="1"><strong>Access Token Stores &gt; OAuth Access Token Store</strong></li><li value="2"><strong>Authorization Code Stores &gt; Authz Code Store</strong></li><li value="3"><strong>Client Access Token Stores &gt; OAuth Client Access Token Store</strong></li></ul></li>
+        </ol>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">By default,  OAuth uses EhCache instead of Cassandra. For more details on OAuth, see the <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIGateway_77_OAuthUserGuide_allOS_en_HTML5/"><span class="api_gateway_variablesgateway">API Gateway</span> OAuth User Guide</a></MadCap:conditionalText>.</td>
+            </tr>
+        </table>
+        <h4>Deploy the configuration </h4>
+        <ol data-mc-continue="false">
+            <li value="1">Click <strong>Deploy</strong> in the toolbar to deploy this configuration to the <span class="api_gateway_variablesgateway">API Gateway</span> group.</li>
+            <li value="2">Restart each <span class="api_gateway_variablesgateway">API Gateway</span> in the group.</li>
+        </ol>
+        <p> For details on any connection errors between <span class="api_gateway_variablesgateway">API Gateway</span> and Cassandra, see <a href="#top" class="MCXref xref">Configure a highly available Cassandra cluster</a>.</p>
+        <h3 data-mc-conditions=""><a name="APIMngrClient"></a>Configure <span class="api_gateway_variablesapi_mgr">API Manager</span> Cassandra client settings</h3>
+        <p data-mc-conditions="">To update the Cassandra client configuration for <span class="api_gateway_variablesapi_mgr">API Manager</span>, perform the following steps:</p>
+        <ol>
+            <li value="1">Ensure the <span class="api_gateway_variablesgateway">API Gateway</span> and <span class="api_gateway_variablesapi_mgr">API Manager</span> components have been installed on the <span class="api_gateway_variablesgateway">API Gateway</span> 1 and <span class="api_gateway_variablesgateway">API Gateway</span> 2 nodes. These can be local or remote to Cassandra installations. For details, see the <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIGateway_77_InstallationGuide_allOS_en_HTML5/"><span class="api_gateway_variablesgateway">API Gateway</span> Installation Guide</a></MadCap:conditionalText>.</li>
+            <li value="2">Ensure an <span class="api_gateway_variablesgateway">API Gateway</span> domain, group, and instance have been created on the <span class="api_gateway_variablesgateway">API Gateway</span> 1 node using <code><span class="api_gateway_variablesdomain_script">managedomain</span></code>. For more details, see <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/csh?context=102&amp;product=prod-api-gateway-77">Configure an <span class="api_gateway_variablesgateway">API Gateway</span> domain</a></MadCap:conditionalText> in the 
+            <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIGateway_77_AdministratorGuide_allOS_en_HTML5/"><span class="api_gateway_variablesgateway">API Gateway</span> Administrator Guide</a></MadCap:conditionalText>.</li>
+            <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                <col style="width: 23px;" />
+                <col style="width: 47px;" />
+                <col style="width: auto;" />
+                <tr>
+                    <td valign="top" />
+                    <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                    </td>
+                    <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">This section assumes that you have already configured <span class="api_gateway_variablesapi_mgr">API Manager</span> on the first node in non-HA standalone mode (for example, using <span class="api_gateway_variablespolicy_studio">Policy Studio</span> or <code>setup-<span class="api_gateway_variableslc_api_mngr">apimanager</span></code>). For more details, see the <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIManager_77_APIMgmtGuide_allOS_en_HTML5/"><span class="api_gateway_variablesapi_mgr">API Manager</span> User Guide</a></MadCap:conditionalText>.</td>
+                </tr>
+            </table>
+        </ol>
+        <ol data-mc-continue="true">
+            <li value="3">Start the first <span class="api_gateway_variablesgateway">API Gateway</span> instance in the group. For example:</li>
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                            <p><span class="api_gateway_variablesgw_start">startinstance</span> -n "my_gw_server_1" -g "my_group"</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <li value="4">Configure the Cassandra connection on the <span class="api_gateway_variablesgateway">API Gateway</span> 1  node. For details, see <a href="#Configur6" class="MCXref xref">Configure the API Gateway Cassandra client connection</a>.</li>
+        </ol>
+        <ol start="1" data-mc-continue="true">
+            <li value="5">Configure the Cassandra consistency levels for your KPS&#160;Collections. For details, see <a href="#Configur7" class="MCXref xref">Configure the API Gateway Cassandra consistency levels</a>.</li>
+            <li value="6">In the <span class="suite_variablesPolicyStudioName">Policy Studio</span> tree, select <strong>Server Settings</strong> &gt; <strong>API Manager</strong> &gt; <strong>Quota Settings</strong>, and ensure that <strong>Use Cassandra</strong> is selected.</li>
+            <li value="7">Under <strong>Cassandra consistency levels</strong>, in both the <strong>Read</strong> and <strong>Write</strong> fields, select <code>QUORUM</code>:</li>
+            <li class="list_detail">
+                <img src="../Resources/Images/docbook/images/api_mgmt/api_mgmt_quota_settings.png" title="" alt="Three node HA full consistency" class="maxWidth" />
+            </li>
+        </ol>
+        <ol start="4" data-mc-continue="true">
+            <li value="8">Add the <span class="api_gateway_variablesgateway">API Gateway</span> 2 host machine to the domain  using <code><span class="api_gateway_variablesdomain_script">managedomain</span></code>.</li>
+            <li value="9">Create the second <span class="api_gateway_variablesgateway">API Gateway</span> instance in the same group on the <span class="api_gateway_variablesgateway">API Gateway</span> 2 node.</li>
+        </ol>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 73px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">Do not start this instance, and do not configure <span class="api_gateway_variablesapi_mgr">API Manager</span> for this instance in <span class="api_gateway_variablespolicy_studio">Policy Studio</span>.</td>
+            </tr>
+        </table>
+        <ol start="4" data-mc-continue="true">
+            <li value="10">Before starting the second <span class="api_gateway_variablesapi_mgr">API Manager</span>-enabled  instance, ensure that each  instance has unique ports in the <code>envSettings.props</code> file. For example:<ol style="list-style-type: lower-roman;"><li value="1">Edit the <code>envSettings.props</code> file for the <span class="api_gateway_variablesgateway">API Gateway</span> instance in the following directory:</li></ol></li>
+            <table role="presentation" style="mc-table-style: url('../Resources/TableStyles/code_window.css');border-left-style: none;border-left-width: 0px;border-left-color: #ffffff;border-right-style: none;border-right-width: 1px;border-right-color: #757575;border-top-style: none;border-top-width: 1px;border-top-color: #757575;border-bottom-style: none;border-bottom-width: 1px;border-bottom-color: #757575;" class="TableStyle-code_window" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                            <p>INSTALL_DIR/<span class="api_gateway_variableslc_product">apigateway</span>/groups/&lt;group-n&gt;/&lt;instance-m&gt;/conf/envSettings.props</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <li class="list_detail">
+                <ol style="list-style-type: lower-roman;" start="2">
+                    <li value="2">Add the <span class="api_gateway_variablesapi_mgr">API Manager</span> ports. For example, the defaults are:</li>
+                </ol>
+            </li>
+            <table role="presentation" style="mc-table-style: url('../Resources/TableStyles/code_window.css');border-left-style: none;border-left-width: 0px;border-left-color: #ffffff;border-right-style: none;border-right-width: 1px;border-right-color: #757575;border-top-style: none;border-top-width: 1px;border-top-color: #757575;border-bottom-style: none;border-bottom-width: 1px;border-bottom-color: #757575;" class="TableStyle-code_window" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                            <p>#API Manager Port<br />env.PORT.APIPORTAL=8075<br /></p>
+                            <p>#API Manager Traffic Port<br />env.PORT.PORTAL.TRAFFIC=8065 </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </ol>
+        <ol data-mc-continue="true">
+            <li value="11">Start the second <span class="api_gateway_variablesgateway">API Gateway</span> instance.  For example:</li>
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                            <p><span class="api_gateway_variablesgw_start">startinstance</span> -n "my_gw_server_2" -g "my_group"</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <li class="list_detail">On startup, this instance receives the <span class="api_gateway_variablesapi_mgr">API Manager</span> configuration for the group. It now shares the same KPS and Cassandra configuration and data, and uses the ports specified in the <code>envSettings.props</code> file.</li>
+        </ol>
+    </body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" lang="en-us" xml:lang="en-us" data-mc-search-type="Stem" data-mc-help-system-file-name="index.xml" data-mc-path-to-help-system="../../" data-mc-target-type="WebHelp2" data-mc-runtime-file-type="Topic" data-mc-preload-images="false" data-mc-in-preview-mode="false" data-mc-toc-path="">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>Manage Apache Cassandra</title>
+        <link rel="shortcut icon" href="../Resources/Images/favicon.ico" />
+        <link href="../../Skins/Default/Stylesheets/Slideshow.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/TextEffects.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/Topic.css" rel="stylesheet" />
+        <link href="../../Skins/Default/Stylesheets/Components/Styles.css" rel="stylesheet" />
+        <link href="../Resources/Stylesheets/axway.css" rel="stylesheet" />
+        <link href="../Resources/TableStyles/code_window.css" rel="stylesheet" />
+        <script src="../../Resources/Scripts/custom.modernizr.js">
+        </script>
+        <script src="../../Resources/Scripts/jquery.min.js">
+        </script>
+        <script src="../../Resources/Scripts/require.min.js">
+        </script>
+        <script src="../../Resources/Scripts/require.config.js">
+        </script>
+        <script src="../../Resources/Scripts/foundation.min.js">
+        </script>
+        <script src="../../Resources/Scripts/plugins.min.js">
+        </script>
+        <script src="../../Resources/Scripts/MadCapAll.js">
+        </script>
+    </head>
+    <body>
+        <h1><a name="top"></a>Manage Apache Cassandra</h1>
+        <p data-mc-conditions="api_gateway_conditions.NoWindows">On <span class="api_gateway_variablesunix_flavours">Linux</span>, when you select to install Cassandra using the <span class="api_gateway_variablesgateway">API Gateway</span> installer as part of a Standard or Complete setup,  Cassandra starts automatically. To start or stop Cassandra manually or as a service, perform the steps described in this topic.</p>
+        <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+            <col style="width: 23px;" />
+            <col style="width: 47px;" />
+            <col style="width: auto;" />
+            <tr>
+                <td valign="top" />
+                <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                </td>
+                <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">Before you start Cassandra, you must follow the best practices in <a href="cassandra_BestPractices.htm">Apache Cassandra Best Practices</a> to achieve a stable Cassandra environment, and to prevent data integrity and performance issues.</td>
+            </tr>
+        </table>
+        <div id="p_install_node_manager_start">
+            <h2><a name="Manage"></a>Manage Apache Cassandra</h2>
+            <p>This section explains how to start and stop Cassandra.</p>
+            <h3>Start Apache Cassandra</h3>
+            <p>To start Cassandra in the background:</p>
+            <ol>
+                <li value="1">Open a command prompt, and change to the following directory:</li>
+            </ol>
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                            <p>$ cd CASSANDRA_HOME/bin</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <ol data-mc-continue="true">
+                <li value="2">Run the following command:</li>
+            </ol>
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                            <p>$ ./cassandra</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>To start Cassandra in the foreground, run the following command:</p>
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                            <p>$ ./cassandra -f </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>For more details, see <a href="https://wiki.apache.org/cassandra/RunningCassandra" target="_blank">https://wiki.apache.org/cassandra/RunningCassandra</a>.</p>
+            <h3 data-mc-conditions="">Start Cassandra as a service</h3>
+            <p data-mc-conditions="">To install Cassandra as a service, you must install and configure appropriate startup script for your system. For example, see the following example startup scripts:</p>
+            <ul>
+                <li value="1" data-mc-conditions=""><strong>CentOS</strong>:</li>
+                <li class="list_detail" data-mc-conditions=""><a href="https://support.axway.com/kb/178063/language/en" target="_blank" title="https://support.axway.com/kb/178063/language/en" alt="https://support.axway.com/kb/178063/language/en">https://support.axway.com/kb/178063/language/en</a>
+                </li>
+                <li value="2" data-mc-conditions=""><strong>Debian</strong>:</li>
+                <li class="list_detail"><a href="https://github.com/apache/cassandra/blob/cassandra-2.2/debian/init" target="_blank" title="https://github.com/apache/cassandra/blob/cassandra-2.2/debian/init" alt="https://github.com/apache/cassandra/blob/cassandra-2.2/debian/init">https://github.com/apache/cassandra/blob/cassandra-2.2/debian/init</a>
+                </li>
+            </ul>
+            <p data-mc-conditions="">When  startup scripts are configured, you can then start Cassandra as a service.</p>
+            <table class="AutoNumber_p_note" style="width: 100%; margin-left: 0;" cellspacing="0" cellpadding="0">
+                <col style="width: 23px;" />
+                <col style="width: 47px;" />
+                <col style="width: auto;" />
+                <tr>
+                    <td valign="top" />
+                    <td class="AutoNumber_p_note" valign="top"><span><b>Note &#160;</b></span>
+                    </td>
+                    <td class="AutoNumber_p_note" valign="top" data-mc-autonum="&lt;b&gt;Note &#160;&lt;/b&gt;">You must have root or sudo permissions to start Cassandra as a service.</td>
+                </tr>
+            </table>
+            <p data-mc-conditions="">For example, typically the command to start Cassandra as a service is as follows:</p>
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                            <p data-mc-conditions="">$ sudo service cassandra start</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 data-mc-conditions="">Stop Cassandra</h3>
+            <ol>
+                <li value="1" data-mc-conditions="">Find the Cassandra Java process ID (PID):</li>
+            </ol>
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                            <p data-mc-conditions="">$ ps auwx | grep cassandra</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <ol data-mc-continue="true">
+                <li value="2" data-mc-conditions="">Run the following command:</li>
+            </ol>
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                            <p data-mc-conditions="">$ sudo kill <em>pid</em></p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 data-mc-conditions="">Stop Cassandra as a  service</h3>
+            <p data-mc-conditions="">You must have <code>root</code> or <code>sudo</code> permissions to stop the Cassandra service as follows:</p>
+            <table class="TableStyle-code_window" style="mc-table-style: url('../Resources/TableStyles/code_window.css');" cellspacing="0">
+                <col class="TableStyle-code_window-Column-Column1" />
+                <tbody>
+                    <tr class="TableStyle-code_window-Body-Body1">
+                        <td class="TableStyle-code_window-BodyA-Column1-Body1">
+                            <p data-mc-conditions="">$ sudo service cassandra stop</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h2 data-mc-conditions=""><a name="Connect"></a>Connect to <span class="api_gateway_variablesgateway">API Gateway</span> for the first time</h2>
+            <p data-mc-conditions="">Connecting to <span class="api_gateway_variablesgateway">API Gateway</span> depends on your operating system and installation setup type (Standard, Complete, or Custom).</p>
+            <h3 data-mc-conditions="">Standard or Complete setup</h3>
+            <p>If you installed a default Standard or Complete setup (both include the QuickStart tutorial), Cassandra is installed on the same host, and listens on <code>localhost</code> by default. <span class="api_gateway_variablesgateway">API Gateway</span> runs on the same host and connects to Cassandra by default.</p>
+            <h3 data-mc-conditions="">Custom setup</h3>
+            <p>If you installed a Custom setup and did not select the Quickstart tutorial, you must update the <span class="api_gateway_variablesgateway">API Gateway</span> Cassandra client configuration as follows:</p>
+            <ol>
+                <li value="1">Open the <span class="api_gateway_variablesgateway">API Gateway</span> group configuration in <span class="api_gateway_variablespolicy_studio">Policy Studio</span>.</li>
+                <li value="2">Select <strong>Server Settings &gt; Cassandra &gt; Authentication</strong>, and set the Cassandra username/password (default is <code>cassandra</code>/<code>cassandra</code>).</li>
+                <li value="3">Select <strong>Server Settings &gt; Cassandra &gt; Hosts</strong>. Add an address for the Cassandra node. You can enter an IP address or host name.</li>
+                <li value="4">Deploy the configuration to the <span class="api_gateway_variablesgateway">API Gateway</span> group.</li>
+            </ol>
+            <p>For more details on configuring <strong>Server Settings</strong> in the <span class="api_gateway_variablespolicy_studio">Policy Studio</span> client, see <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/csh?context=105&amp;product=prod-api-gateway-77">Cassandra Settings</a></MadCap:conditionalText> in the <MadCap:conditionalText data-mc-conditions="axway_conditions.PortalYes"><a href="/bundle/APIGateway_77_AdministratorGuide_allOS_en_HTML5/"><span class="api_gateway_variablesgateway">API Gateway</span> Administrator Guide</a></MadCap:conditionalText>. For details on updating the Cassandra server configuration, see <a href="cassandra_config.htm" class="MCXref xref">Configure a highly available Cassandra cluster</a>.</p>
+        </div>
+        <div id="p_install_node_manager_start">
+            <h2 data-mc-conditions="">Further details</h2>
+            <p data-mc-conditions="">For more details on Apache Cassandra, see the following: </p>
+            <ul>
+                <li value="1"><a href="http://cassandra.apache.org/" target="_blank">http://cassandra.apache.org/</a>
+                </li>
+                <li value="2"><a href="http://docs.datastax.com/en/cassandra/2.2/" target="_blank" title="http://docs.datastax.com/en/cassandra/2.2/" alt="http://docs.datastax.com/en/cassandra/2.2/">http://docs.datastax.com/en/cassandra/2.2/</a>
+                </li>
+            </ul>
+        </div>
+    </body>
+</html>
