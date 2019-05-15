@@ -1,5 +1,5 @@
 ---
-title: Cassandra Administrator Guide
+title: Manage Cassandra
 keywords: sample
 summary: "This is just a sample topic..."
 sidebar: apig_sidebar
@@ -82,7 +82,7 @@ as follows:
 
 `$ sudo service cassandra stop`
 
-## API Gateway</span> for the first time
+## Connect to API Gateway for the first time
 
 Connecting to <span class="api_gateway_variablesgateway">API
 Gateway</span> depends on your operating system and installation setup
@@ -123,7 +123,7 @@ Settings](/csh?context=105&product=prod-api-gateway-77) in the
 Administrator
 Guide](/bundle/APIGateway_77_AdministratorGuide_allOS_en_HTML5/). For
 details on updating the Cassandra server configuration, see [Configure a
-highly available Cassandra cluster](cassandra_config.htm).
+highly available Cassandra cluster](cassandra_config).
 
 ## Further details
 
@@ -131,3 +131,5 @@ For more details on Apache Cassandra, see the following:
 
   - <http://cassandra.apache.org/>
   - [http://docs.datastax.com/en/cassandra/2.2/](http://docs.datastax.com/en/cassandra/2.2/ "http://docs.datastax.com/en/cassandra/2.2/")
+
+{% include links.html %}

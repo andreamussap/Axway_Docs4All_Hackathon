@@ -1,5 +1,5 @@
 ---
-title: Cassandra Administrator Guide
+title: Essential operations
 keywords: sample
 summary: "This is just a sample topic..."
 sidebar: apig_sidebar
@@ -57,7 +57,7 @@ Run full repair at 1 a.m. every Monday:
 `0 1 \* \* 1 PATH\_TO\_CASSANDRA/bin/nodetool CONNECTION\_SECURITY\_PARAMS repair -pr --full \> PATH\_TO\_CASSANDRA/logs/last\_repair.log 2\>&1`
 
 See also [Clean up Cassandra repair
-history](cassandra_BestPractices.htm#Clean).
+history](cassandra_BestPractices.html#Clean).
 
 ## <span id="Replace"></span>Replace dead nodes
 
@@ -75,7 +75,7 @@ configuration file if necessary (if you updated Cassandra
 configuration). Perform the following steps:
 
 1.  Stop Cassandra. For details, see [Manage Apache
-    Cassandra](cassandra_manage.htm).
+    Cassandra](cassandra_manage).
 2.  Move `CASSANDRA_HOME/data` to `CASSANDRA_HOME/data/OLD-DATA-DATE`.
 3.  Restore `cassandra.yaml` in `CASSANDRA_HOME/conf` if necessary.
 
@@ -123,3 +123,5 @@ For details on upgrading your Cassandra version, see [Upgrade Apache
 Cassandra](/csh?context=801&product=prod-api-gateway-77) in the
 [<span class="api_gateway_variablesgateway">API Gateway</span> Upgrade
 Guide](/bundle/APIGateway_77_UpgradeGuide_allOS_en_HTML5).
+
+{% include links.html %}

@@ -1,5 +1,5 @@
 ---
-title: Cassandra Administrator Guide
+title: Backup and restore
 keywords: sample
 summary: "This is just a sample topic..."
 sidebar: apig_sidebar
@@ -110,7 +110,7 @@ In the following example, `xxx_group_2` and `xxx_group_3` are
 <span class="api_management_variablesAPIManagementName">API
 Management</span> keyspaces:
 
-![](../Resources/Images/CassandraAdminGuide/cqlsh_keyspace.png)
+{% include image.html file="cassandra/cqlsh_keyspace.png" %}
 
 ### Find keyspaces using kpsadmin
 
@@ -119,7 +119,7 @@ Using `kpsadmin`, choose: `option 30) Show Configuration`, and enter the
 any instance to back up, or use the command line, as shown in the
 following example:
 
-![](../Resources/Images/CassandraAdminGuide/kpsadmin_keyspace.png)
+{% include image.html file="cassandra/kpsadmin_keyspace.png" %}
 
 ## Back up a keyspace
 
@@ -143,64 +143,60 @@ archive that backup.
 
 1.  For example: 
 
-![](../Resources/Images/CassandraAdminGuide/nodetool_snapshot.png)
+{% include image.html file="cassandra/nodetool_snapshot.png" %}
 
 2.  Run the following script to copy the snapshot files to another
     location: 
 
 |  | <span>**Note  **</span> | This script also clears the snapshot files from the Cassandra `data` directory. |
 
-<table>
-<tbody>
-<tr class="odd">
-<td><code>#!/bin/bash
+```bash
+#!/bin/bash
 ################################################################################
 # Sample Cassandra snapshot backup script                                      #
 # NOTE: This MUST be adapted for and validated in your environment before use! #
-################################################################################</code></pre>
-<pre data-space="preserve"><code>set -e
-trap &#39;[ &quot;$?&quot; -eq 0 ] || echo \*\*\* FATAL ERROR \*\*\*&#39; EXIT $?</code></pre>
-<pre data-space="preserve"><code># Replace the xxx values below to match your environment
-CASSANDRA_DATA_DIR=&quot;xxx&quot;
-KEYSPACE_NAME=&quot;xxx&quot;
-SNAPSHOT_NAME=&quot;xxx&quot;
-BACKUP_ROOT_DIR=&quot;xxx&quot;</code></pre>
-<pre data-space="preserve"><code># Example:
-#  CASSANDRA_DATA_DIR=&quot;/opt/cassandra/data/data&quot;
-#  KEYSPACE_NAME=&quot;x9fa003e2_d975_4a4a_a27e_280ab7fd8a5_group_2&quot;
-#  SNAPSHOT_NAME=&quot;Group2-20181127_2144_28&quot;
-#  BACKUP_ROOT_DIR=&quot;/backup/cassandra-snapshots&quot;</code></pre>
-<pre data-space="preserve"><code>##### Do NOT change anything below this line #####
-backupdir=&quot;${BACKUP_ROOT_DIR}/${SNAPSHOT_NAME}&quot;
-if [ -d &quot;${backupdir}&quot; ]; then echo -e &quot;\nERROR: Snapshot &#39;${SNAPSHOT_NAME}&#39; already exists in the backup dir&quot;;exit 1; fi
+################################################################################
+set -e
+trap '[ "$?" -eq 0 ] || echo \*\*\* FATAL ERROR \*\*\*' EXIT $?
+# Replace the xxx values below to match your environment
+CASSANDRA_DATA_DIR="xxx"
+KEYSPACE_NAME="xxx"
+SNAPSHOT_NAME="xxx"
+BACKUP_ROOT_DIR="xxx"
+# Example:
+#  CASSANDRA_DATA_DIR="/opt/cassandra/data/data"
+#  KEYSPACE_NAME="x9fa003e2_d975_4a4a_a27e_280ab7fd8a5_group_2"
+#  SNAPSHOT_NAME="Group2-20181127_2144_28"
+#  BACKUP_ROOT_DIR="/backup/cassandra-snapshots"
+##### Do NOT change anything below this line #####
+backupdir="${BACKUP_ROOT_DIR}/${SNAPSHOT_NAME}"
+if [ -d "${backupdir}" ]; then echo -e "\nERROR: Snapshot '${SNAPSHOT_NAME}' already exists in the backup dir";exit 1; fi
 mkdir -p ${backupdir}
-keyspace_path=&quot;${CASSANDRA_DATA_DIR}/${KEYSPACE_NAME}&quot;
-if ! [ -d &quot;${keyspace_path}&quot; ]; then echo -e &quot;\nERROR: Keyspace path &#39;${keyspace_path}&#39; is not valid&quot;;exit 1; fi</code></pre>
-<pre><code>snapshot_dirs=()</code></pre>
-<pre data-space="preserve"><code>find &quot;${keyspace_path}/&quot; -maxdepth 1 -mindepth 1 -type d ! -name &quot;$(printf &quot;*\n*&quot;)&quot; &gt; backup.tmp
+keyspace_path="${CASSANDRA_DATA_DIR}/${KEYSPACE_NAME}"
+if ! [ -d "${keyspace_path}" ]; then echo -e "\nERROR: Keyspace path '${keyspace_path}' is not valid";exit 1; fi
+snapshot_dirs=()
+find "${keyspace_path}/" -maxdepth 1 -mindepth 1 -type d ! -name "$(printf "*\n*")" > backup.tmp
 while IFS= read -r table_dir
 do
   str=${table_dir##*/}
   table_uuid=${str##*-}
   len=$((${#str} - ${#table_uuid} - 1))
   table_name=${str:0:${len}}
-  echo &quot;Copy table, $table_name&quot;
-  current_backup_dir=&quot;${backupdir}/${table_name}&quot;
-  mkdir -p &quot;${current_backup_dir}&quot;
-  current_snapshot=&quot;${table_dir}/snapshots/${SNAPSHOT_NAME}&quot;
-  snapshot_dirs+=(&quot;${current_snapshot}&quot;)
-  cp -r -a &quot;${current_snapshot}&quot;/* &quot;${current_backup_dir}/&quot;
-done &lt; backup.tmp
-rm backup.tmp</code></pre>
-<pre data-space="preserve"><code>echo -e &quot;\nRemoving snapshot files from Cassandra data directory&quot;
-for dir in &quot;${snapshot_dirs[@]}&quot;
+  echo "Copy table, $table_name"
+  current_backup_dir="${backupdir}/${table_name}"
+  mkdir -p "${current_backup_dir}"
+  current_snapshot="${table_dir}/snapshots/${SNAPSHOT_NAME}"
+  snapshot_dirs+=("${current_snapshot}")
+  cp -r -a "${current_snapshot}"/* "${current_backup_dir}/"
+done < backup.tmp
+rm backup.tmp
+echo -e "\nRemoving snapshot files from Cassandra data directory"
+for dir in "${snapshot_dirs[@]}"
 do
-  rm -rf &quot;${dir}&quot;
+  rm -rf "${dir}"
 done
-</code></td>
-</tr>
-</tbody>
-</table>
+````
+
 
 When this script finishes, it creates the following backup directory
 structure:
@@ -244,7 +240,7 @@ ensure the following:
   - The Cassandra cluster must be created to the
     <span class="api_gateway_variablesgateway">API Gateway</span> HA
     specifications. For more details, see [Configure a highly available
-    Cassandra cluster](cassandra_config.htm).
+    Cassandra cluster](cassandra_config).
   - All <span class="api_gateway_variablesgateway">API Gateway</span>
     groups must have their schema created in the new cluster, and the
     replication factor must be the same as the cluster size (normally
@@ -289,46 +285,43 @@ ensure the following:
     snapshot files taken by the backup process and script (described in
     [Back up a keyspace](#Back)):
 
-<table>
-<tbody>
-<tr class="odd">
-<td>
-<code>#!/bin/bash
+```bash
+#!/bin/bash
 ################################################################################
 # Sample Cassandra restore snapshot script                                     #
 # NOTE: This MUST be adapted for and validated in your environment before use! #
-################################################################################</code></pre>
-<pre data-space="preserve"><code># Replace the xxx values below to match your environment
-CASSANDRA_DATA_DIR=&quot;xxx&quot;
-KEYSPACE_NAME=&quot;xxx&quot;
-SNAPSHOT_NAME=&quot;xxx&quot;
-BACKUP_ROOT_DIR=&quot;xxx&quot;</code></pre>
-<pre data-space="preserve"><code># Example:
-#  CASSANDRA_DATA_DIR=&quot;/opt/cassandra/data/data&quot;
-#  KEYSPACE_NAME=&quot;x9fa003e2_d975_4a4a_a27e_280ab7fd8a5_group_2&quot;
-#  SNAPSHOT_NAME=&quot;Group2-20181127_2144_28&quot;
-#  BACKUP_ROOT_DIR=&quot;/backup/cassandra-snapshots&quot;</code></pre>
-<pre data-space="preserve"><code>##### Do NOT change anything below this line #####
-backupdir=&quot;${BACKUP_ROOT_DIR}/${SNAPSHOT_NAME}&quot;
-keyspace_path=&quot;${CASSANDRA_DATA_DIR}/${KEYSPACE_NAME}&quot;
-echo -e &quot;\n\tRestoring tables from directory, &#39;${backupdir}&#39;, to directory, &#39;${keyspace_path}&#39;&quot;
-echo -e &quot;\tRestore snapshot, &#39;${SNAPSHOT_NAME}&#39;, to keyspace, &#39;${KEYSPACE_NAME}&#39;&quot;
-read -n 1 -p &quot;Continue (y/n)?&quot; answer
-echo -e &quot;\n&quot;
-if [ &quot;$answer&quot; != &quot;y&quot; ] &amp;&amp; [ &quot;$answer&quot; != &quot;Y&quot; ]; then
+################################################################################
+# Replace the xxx values below to match your environment
+CASSANDRA_DATA_DIR="xxx"
+KEYSPACE_NAME="xxx"
+SNAPSHOT_NAME="xxx"
+BACKUP_ROOT_DIR="xxx"
+# Example:
+#  CASSANDRA_DATA_DIR="/opt/cassandra/data/data"
+#  KEYSPACE_NAME="x9fa003e2_d975_4a4a_a27e_280ab7fd8a5_group_2"
+#  SNAPSHOT_NAME="Group2-20181127_2144_28"
+#  BACKUP_ROOT_DIR="/backup/cassandra-snapshots"
+##### Do NOT change anything below this line #####
+backupdir="${BACKUP_ROOT_DIR}/${SNAPSHOT_NAME}"
+keyspace_path="${CASSANDRA_DATA_DIR}/${KEYSPACE_NAME}"
+echo -e "\n\tRestoring tables from directory, '${backupdir}', to directory, '${keyspace_path}'"
+echo -e "\tRestore snapshot, '${SNAPSHOT_NAME}', to keyspace, '${KEYSPACE_NAME}'"
+read -n 1 -p "Continue (y/n)?" answer
+echo -e "\n"
+if [ "$answer" != "y" ] && [ "$answer" != "Y" ]; then
   exit 1
-fi</code></pre>
-<pre data-space="preserve"><code>set -e
-trap &#39;[ &quot;$?&quot; -eq 0 ] || echo \*\*\* FATAL ERROR \*\*\*&#39; EXIT $?</code></pre>
-<pre data-space="preserve"><code>if ! [ -d &quot;${backupdir}&quot; ]; then echo -e &quot;\nERROR: Backup not found at &#39;${backupdir}&#39;&quot;;exit 1; fi
-if ! [ -d &quot;${keyspace_path}&quot; ]; then echo -e &quot;\nERROR: Keyspace path &#39;${keyspace_path}&#39; is not valid&quot;;exit 1; fi</code></pre>
-<pre data-space="preserve"><code>keyspace_tables=$(mktemp)
-find &quot;${keyspace_path}/&quot; -maxdepth 1 -mindepth 1 -type d -fprintf ${keyspace_tables} &quot;%f\n&quot;
-sort -o ${keyspace_tables} ${keyspace_tables}</code></pre>
-<pre data-space="preserve"><code>backup_tablenames=$(mktemp)
-find &quot;${backupdir}/&quot; -maxdepth 1 -mindepth 1 -type d -fprintf ${backup_tablenames} &quot;%f\n&quot;
-sort -o ${backup_tablenames} ${backup_tablenames}</code></pre>
-<pre data-space="preserve"><code>keyspace_tablenames=$(mktemp)
+fi
+set -e
+trap '[ "$?" -eq 0 ] || echo \*\*\* FATAL ERROR \*\*\*' EXIT $?
+if ! [ -d "${backupdir}" ]; then echo -e "\nERROR: Backup not found at '${backupdir}'";exit 1; fi
+if ! [ -d "${keyspace_path}" ]; then echo -e "\nERROR: Keyspace path '${keyspace_path}' is not valid";exit 1; fi
+keyspace_tables=$(mktemp)
+find "${keyspace_path}/" -maxdepth 1 -mindepth 1 -type d -fprintf ${keyspace_tables} "%f\n"
+sort -o ${keyspace_tables} ${keyspace_tables}
+backup_tablenames=$(mktemp)
+find "${backupdir}/" -maxdepth 1 -mindepth 1 -type d -fprintf ${backup_tablenames} "%f\n"
+sort -o ${backup_tablenames} ${backup_tablenames}
+keyspace_tablenames=$(mktemp)
 table_names=()
 table_uuids=()
 while IFS= read -r table
@@ -337,30 +330,27 @@ do
   uuid=${str##*-}
   len=$((${#str} - ${#uuid} - 1))
   name=${str:0:${len}}
-  echo &quot;${name}&quot; &gt;&gt; ${keyspace_tablenames}
+  echo "${name}" >> ${keyspace_tablenames}
   table_names+=(${name})
   table_uuids+=(${uuid})
-done &lt; ${keyspace_tables}</code></pre>
-<pre data-space="preserve"><code>set +e
+done < ${keyspace_tables}
+set +e
 diff -a -q ${keyspace_tablenames} ${backup_tablenames}
 if [ $? -ne 0 ]; then
-  echo -e &quot;\nERROR: The tables on the keyspace at, &#39;${keyspace_path}&#39;, are not the same as the ones from the backup at,
-&#39;${backupdir}&#39;&quot;
+  echo -e "\nERROR: The tables on the keyspace at, '${keyspace_path}', are not the same as the ones from the backup at,
+'${backupdir}'"
   exit 1
-fi</code></pre>
-<pre data-space="preserve"><code>for ((i=0; i&lt;${#table_names[*]}; i++));
+fi
+for ((i=0; i<${#table_names[*]}; i++));
 do
-  echo &quot;Restoring table, &#39;${table_names[i]}&#39;&quot;
-  table_dir=&quot;${keyspace_path}/${table_names[i]}-${table_uuids[i]}&quot;
-  rm -r &quot;${table_dir}&quot;
-  mkdir &quot;${table_dir}&quot;
-  src=&quot;${backupdir}/${table_names[i]}&quot;
-  cp -r -a &quot;${src}&quot;/* &quot;${table_dir}/&quot;
-done</code>
-</td>
-</tr>
-</tbody>
-</table>
+  echo "Restoring table, '${table_names[i]}'"
+  table_dir="${keyspace_path}/${table_names[i]}-${table_uuids[i]}"
+  rm -r "${table_dir}"
+  mkdir "${table_dir}"
+  src="${backupdir}/${table_names[i]}"
+  cp -r -a "${src}"/* "${table_dir}/"
+done
+````
 
 1.  On the other nodes in the cluster, perform the following:
 
@@ -427,3 +417,5 @@ This directory contains
 the <span class="api_gateway_variablesgateway">API
 Gateway</span>, <span class="api_gateway_variablesapi_mgr">API
 Manager</span>, and KPS configuration data.
+
+{% include links.html %}

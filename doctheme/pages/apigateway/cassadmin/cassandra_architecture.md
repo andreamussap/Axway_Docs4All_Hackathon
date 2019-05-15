@@ -143,8 +143,7 @@ The following diagram shows local Cassandra HA mode:
 {% include image.html file="cassandra/cassandra_architecture_local.png" alt="Local Cassandra HA architecture" %}
 
 
-
-|  | <span>**Note  **</span> | In this example, one of the Cassandra nodes runs without an <span class="api_gateway_variablesgateway">API Gateway</span> instance on the same host. This is because the minimum deployment architecture includes two <span class="api_gateway_variablesgateway">API Gateway</span> hosts and three Cassandra hosts. If you have three <span class="api_gateway_variablesgateway">API Gateway</span> instances, all Cassandra nodes are local. |
+{% include note.html content="In this example, one of the Cassandra nodes runs without an API Gateway instance on the same host. This is because the minimum deployment architecture includes two API Gateway hosts and three Cassandra hosts. If you have three API Gateway instances, all Cassandra nodes are local." %}
 
 ### <span id="HA"></span>HA with remote storage
 
@@ -165,7 +164,7 @@ differences when installing and configuring remote Cassandra are:
   - You can configure the remote node using the `setup-cassandra` script
     supplied by the <span class="api_gateway_variablesgateway">API
     Gateway</span> installation. For more details, see [setup-cassandra
-    script reference](cassandra_setup_script.htm). Alternatively, you
+    script reference](cassandra_setup_script). Alternatively, you
     can perform all necessary Cassandra configuration changes manually.
   - You must update the <span class="api_gateway_variablesgateway">API
     Gateway</span> Cassandra client settings in
@@ -193,19 +192,14 @@ Cassandra HA configuration in the diagrams consists of the following:
         `native_transport_port` of `9042`
       - JMX monitoring on `localhost:7199`
 
-
-
-  - `ipA`, `ipB`, and `ipC` are placeholders for real host machines on
-    your network. You can specify IP addresses or host names.
-  - You must have at least one designated seed node. Seeds nodes are
-    required at runtime when a node is added to the cluster. You can add
-    more or change designation later.
-  - You can change the server-server port, but it must be the same
-    across the cluster.
-  - For Cassandra administration, you must gain local access to the host
-    machine (for example, using SSH) to perform administration tasks.
-    This includes using `nodetool` to access the Cassandra cluster over
-    JMX.
+{% include callout.html content="`ipA`, `ipB`, and `ipC` are placeholders for real host machines on
+  your network. You can specify IP addresses or host names.<br/><br/>You must have at least one designated seed node. Seeds nodes are
+  required at runtime when a node is added to the cluster. You can add
+  more or change designation later.<br/><br/>You can change the server-server port, but it must be the same
+  across the cluster.<br/><br/>For Cassandra administration, you must gain local access to the host
+  machine (for example, using SSH) to perform administration tasks.
+  This includes using `nodetool` to access the Cassandra cluster over
+  JMX." type="primary" %}
 
 ### <span class="api_gateway_variablesgateway">API Gateway</span> configuration
 
@@ -222,8 +216,10 @@ client of the Cassandra cluster as follows:
     `QUORUM`. This, along with the replication factor of `3`, enables
     full availability in the event of one node loss.
 
+{% include note.html content="You can have any number of API Gateway instances (all running either locally or remote to Cassandra). However, you must have at least two API Gateway instances for HA. This also applies to API Manager." %}
 
-|  | <span>**Note  **</span> | You can have any number of <span class="api_gateway_variablesgateway">API Gateway</span> instances (all running either locally or remote to Cassandra). However, you must have at least two <span class="api_gateway_variablesgateway">API Gateway</span> instances for HA. This also applies to <span class="api_gateway_variablesapi_mgr">API Manager</span>. |
 
 For more details on Cassandra HA configuration, see [Configure a highly
-available Cassandra cluster](cassandra_config.htm).
+available Cassandra cluster](cassandra_config).
+
+{% include links.html %}

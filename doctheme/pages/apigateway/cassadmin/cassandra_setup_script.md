@@ -1,5 +1,5 @@
 ---
-title: Cassandra Administrator Guide
+title: Setup script reference
 keywords: sample
 summary: "This is just a sample topic..."
 sidebar: apig_sidebar
@@ -16,7 +16,7 @@ can use this script when Cassandra is installed locally along with
 <span class="api_gateway_variablesgateway">API Gateway</span>, or
 installed remotely on a different node. For details on supported
 Cassandra deployment architectures and HA production environments, see
-[Configure a highly available Cassandra cluster](cassandra_config.htm).
+[Configure a highly available Cassandra cluster](cassandra_config).
 
 <span class="api_gateway_variablesgateway">API Gateway</span> provides
 the `setup-cassandra` script to help configure a Cassandra cluster by
@@ -67,7 +67,7 @@ also configure remote Cassandra nodes to use the `setup-cassandra`
 script supplied by the <span class="api_gateway_variablesgateway">API
 Gateway</span> installation. Alternatively, you can perform all
 necessary Cassandra configuration changes manually. For details, see
-[Configure a highly available Cassandra cluster](cassandra_config.htm).
+[Configure a highly available Cassandra cluster](cassandra_config).
 
 To configure a remote Cassandra node to use the `setup-cassandra`
 script, perform the following steps:
@@ -78,6 +78,9 @@ script, perform the following steps:
     variable on the remote Cassandra node.
 3.  Change to the following directory on the local
     <span class="api_gateway_variablesgateway">API Gateway</span> node:
+```console
+AXWAY_HOME/apigateway/system/lib/jython/
+````    
 4.  Copy the `setup-cassandra.py` file to your chosen directory on the
     remote Cassandra node.
 
@@ -171,20 +174,21 @@ and password (`cassandra`/`cassandra`). Run this command to see the
 instructions that you need to follow. For example, on the seed node the
 instructions are as follows:
 
-<table>
-<tbody>
-<tr class="odd">
-<td><p>./setup-cassandra --seed --own-ip=<em>ipA</em> --nodes=3 --cassandra config=/opt/cassandra/conf/cassandra.yaml</p>
-<p>Connect to Cassandra with cqlsh and run following commands to create an alternative superuser account:</p>
-<p>CREATE USER admin WITH PASSWORD 'amujsa26al2ns' SUPERUSER;QUIT<br />
-PLEASE MAKE A NOTE OF USERNAME AND PASSWORD FOR THE NEW SUPERUSER ACCOUNT:<br />
-USERNAME: admin PASSWORD: amujsa26al2ns</p>
-<p>Connect to Cassandra using newly created account to lock out the default Cassandra superuser account and update "system_auth" keyspace replication factor:</p>
-<p>/opt/cassandra/bin/cqlsh -u admin -p amujsa26al2ns node1 ALTER USER cassandra WITH PASSWORD 'g5q5h4h3bf1pnh2nsra9iucd82d7f1jams468vhaiimtibtuqpf' NOSUPERUSER;</p>
-<p>ALTER KEYSPACE "system_auth" WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor': 3 }; QUIT</p></td>
-</tr>
-</tbody>
-</table>
+```console
+./setup-cassandra --seed --own-ip=ipA --nodes=3 --cassandra config=/opt/cassandra/conf/cassandra.yaml
+
+Connect to Cassandra with cqlsh and run following commands to create an alternative superuser account:
+
+CREATE USER admin WITH PASSWORD 'amujsa26al2ns' SUPERUSER;QUIT
+PLEASE MAKE A NOTE OF USERNAME AND PASSWORD FOR THE NEW SUPERUSER ACCOUNT:
+USERNAME: admin PASSWORD: amujsa26al2ns
+
+Connect to Cassandra using newly created account to lock out the default Cassandra superuser account and update "system_auth" keyspace replication factor:
+
+/opt/cassandra/bin/cqlsh -u admin -p amujsa26al2ns node1 ALTER USER cassandra WITH PASSWORD 'g5q5h4h3bf1pnh2nsra9iucd82d7f1jams468vhaiimtibtuqpf' NOSUPERUSER;
+
+ALTER KEYSPACE "system_auth" WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor': 3 }; QUIT
+```
 
 
 |  | <span>**Note  **</span> | If you are setting up a Cassandra HA cluster, you must replicate the `system_auth` keyspace as shown in this example. This enables <span class="api_gateway_variablesgateway">API Gateway</span> to communicate with the cluster if a node goes down. For more details, see the [Configuring authentication](https://docs.datastax.com/en/archived/cassandra/2.2/cassandra/configuration/secureConfigNativeAuth.html?hl=authentication) documentation. |
@@ -228,9 +232,7 @@ instruct the `setup-cassandra` script to configure client-to-node
 encryption, add the `--enable-client-encryption` option to script
 arguments:
 
-|                                                                                                                                 |
-| ------------------------------------------------------------------------------------------------------------------------------- |
-| setup-cassandra --seed-ip=*ipA* --own-ip=*ipB* --cassandra-config=/opt/cassandra/conf/cassandra.yaml --enable-client-encryption |
+`setup-cassandra --seed-ip=*ipA* --own-ip=*ipB* --cassandra-config=/opt/cassandra/conf/cassandra.yaml --enable-client-encryption`
 
 After you run the `setup-cassandra` script, it provides instructions for
 converting the keys and certificates to a format required by Cassandra.
@@ -299,3 +301,5 @@ If client-to-node TLS/SSL traffic encryption is enabled:
   - `store_type`: JKS
   - `algorithm`: SunX509
   - `require_client_auth`: true
+
+{% include links.html %}

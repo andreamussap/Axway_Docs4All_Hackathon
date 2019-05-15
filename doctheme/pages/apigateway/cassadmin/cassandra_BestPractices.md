@@ -1,5 +1,5 @@
 ---
-title: Cassandra Administrator Guide
+title: Best practices
 keywords: sample
 summary: "This is just a sample topic..."
 sidebar: apig_sidebar
@@ -94,6 +94,9 @@ Ensure that you turn `swap` off.
 1.  The line `cat/proc/swaps` in the `/etc/fstab` file should show `NO
     entries`. If entries are present, execute the following command to
     disable all swap entries currently active:
+```console
+sudo swapoff -a sad
+````    
 2.  Delete all swap entries in `/etc/fstab` to ensure that swap is not
     enabled again when the machine is restarted.
 
@@ -176,4 +179,6 @@ truncate by executing the following against all Cassandra nodes:
 ### Further information
 
 See also [Perform essential Apache Cassandra
-operations](cassandra_ops.htm).
+operations](cassandra_ops).
+
+{% include links.html %}

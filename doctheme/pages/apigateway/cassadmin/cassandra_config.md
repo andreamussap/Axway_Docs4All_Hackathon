@@ -1,5 +1,5 @@
 ---
-title: Cassandra Administrator Guide
+title: Configure HA
 keywords: sample
 summary: "This is just a sample topic..."
 sidebar: apig_sidebar
@@ -70,7 +70,20 @@ Perform the following steps to configure a *seed* node:
 2.  Update the `CASSANDRA_HOME/conf/cassandra.yaml` file manually or
     using the `setup-cassandra` script.  
     Manually:
+```yaml
+seed_provider, parameters, seeds: IP_SEED_NODE
+start_native_transport: true
+start_rpc: false
+native_transport_port: 9042
+listen_address: IP_SEED_NODE
+rpc_address: IP_SEED_NODE
+authenticator: org.apache.cassandra.auth.PasswordAuthenticator
+authorizer: org.apache.cassandra.auth.CassandraAuthorizer
+````
 3.  Using the `setup-cassandra` script:
+```console
+setup-cassandra --seed --own-ip=<IP_SEED_NODE> --nodes=3 --cassandra-config=CONFIG_FILE
+````
 4.  Start Cassandra.
 5.  Verify the `CASSANDRA_HOME/logs/system.log` does not contain any
     errors or warnings.
@@ -87,7 +100,20 @@ you have previously configured.
 1.  Connect to the additional node via SSH, and update the
     `CASSANDRA_HOME/conf/cassandra.yaml` file.  
     Manually:
+```yaml
+seed_provider, parameters, seeds: IP_SEED_NODE
+start_native_transport: true
+start_rpc: false
+native_transport_port: 9042
+listen_address: IP_NODE_N
+rpc_address: IP_NODE_N
+authenticator: org.apache.cassandra.auth.PasswordAuthenticator
+authorizer: org.apache.cassandra.auth.CassandraAuthorizer
+````
 2.  Using the `setup-cassandra` script:
+```console
+setup-cassandra --seed-ip=<IP_SEED_NODE> --own-ip=<IP_NODE_n> --cassandra-config=<PATH_TO_CASSANDRA.YAML>
+````
 3.  Start Cassandra.  
 4.  Verify the `CASSANDRA_HOME/logs/system.log` does not contain any
     errors or warnings.
@@ -98,20 +124,21 @@ you have previously configured.
 
 From the command line, execute the following commands to create a new
 user:
+```sql
+>./cqlsh <IP_NODE_1> -u cassandra -p cassandra
 
-<table>
-<tbody>
-<tr class="odd">
-<td><p>&gt;./cqlsh &lt;IP_NODE_1&gt; -u cassandra -p cassandra</p>
-<p>&gt; ALTER KEYSPACE "system_auth" WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor': 3 };</p>
-<p>&gt; CREATE USER &lt;USERNAME&gt; WITH PASSWORD '&lt;PASSWORD&gt;' SUPERUSER;</p>
-<p>&gt; QUIT;</p>
-<p>&gt;./cqlsh &lt;IP_NODE_1&gt; -u &lt;ADMIN_USERNAME&gt; -p &lt;PASSWORD&gt;</p>
-<p>&gt; ALTER USER cassandra WITH PASSWORD '&lt;PASSWORD&gt;' NOSUPERUSER;</p>
-<p>&gt; QUIT</p></td>
-</tr>
-</tbody>
-</table>
+> ALTER KEYSPACE "system_auth" WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor': 3 };
+
+> CREATE USER <USERNAME> WITH PASSWORD '<PASSWORD>' SUPERUSER;
+
+> QUIT;
+
+>./cqlsh <IP_NODE_1> -u <ADMIN_USERNAME> -p <PASSWORD>
+
+> ALTER USER cassandra WITH PASSWORD '<PASSWORD>' NOSUPERUSER;
+
+> QUIT
+````
 
 ### Configure the <span class="api_gateway_variablesgateway">API Gateway</span> Cassandra client connection
 
@@ -188,19 +215,18 @@ the following steps:
     required to configure Cassandra consistency levels, and is created
     automatically if you installed the **Complete** setup type.
 
-2.   If you installed the **Custom** or **Standard** setup, you must
+    If you installed the **Custom** or **Standard** setup, you must
     configure OAuth or <span class="api_gateway_variablesapi_mgr">API
     Manager</span> settings in
     <span class="api_gateway_variablespolicy_studio">Policy
     Studio</span> to create the required KPS collections. For more
     details, see:
-
-      - [Deploy OAuth
+    *  [Deploy OAuth
         configuration](/csh?context=400&product=prod-api-gateway-77) in
         the [<span class="api_gateway_variablesgateway">API
         Gateway</span> OAuth User
         Guide](/bundle/APIGateway_77_OAuthUserGuide_allOS_en_HTML5/)
-      - [Configure API Manager Cassandra client
+    *  [Configure API Manager Cassandra client
         settings](#APIMngrClient)
 
 3.  Select **Environment Configuration \> Key Property Stores \> API
@@ -209,16 +235,14 @@ the following steps:
 4.  In the **Read Consistency Level** and **Write Consistency Level**
     fields, select **QUORUM**:
 
-5.    - ![](../Resources/Images/docbook/images/api_mgmt/api_mgmt_embedded_kps.png)
+    {% include image.html file="cassandra/api_mgmt_embedded_kps.png" %}
 
-<!-- end list -->
-
-1.  Repeat this step for each KPS collection using Cassandra (for
+5.  Repeat this step for each KPS collection using Cassandra (for
     example, **Key Property Stores \> OAuth**, or
     **<span class="suite_variablesAPIPortalName">API Portal</span>** for
     <span class="api_gateway_variablesapi_mgr">API Manager</span>). This
     also applies to any custom KPS collections that you have created.
-2.  If you are using OAuth and Cassandra, you must also configure quorum
+6.  If you are using OAuth and Cassandra, you must also configure quorum
     consistency for all OAuth2 stores under **Libraries \> OAuth2
     Stores**:
       - **Access Token Stores \> OAuth Access Token Store**
@@ -268,6 +292,9 @@ the following steps:
 
 1.  Start the first <span class="api_gateway_variablesgateway">API
     Gateway</span> instance in the group. For example:
+    ```console
+    startinstance -n "my_gw_server_1" -g "my_group"
+    ````
 2.  Configure the Cassandra connection on the
     <span class="api_gateway_variablesgateway">API Gateway</span> 1
     node. For details, see [Configure the API Gateway Cassandra client
@@ -283,10 +310,7 @@ the following steps:
     **Quota Settings**, and ensure that **Use Cassandra** is selected.
 3.  Under **Cassandra consistency levels**, in both the **Read** and
     **Write** fields, select `QUORUM`:
-4.  ![Three node HA full
-    consistency](../Resources/Images/docbook/images/api_mgmt/api_mgmt_quota_settings.png)
-
-<!-- end list -->
+    {% include image.html file="cassandra/api_mgmt_quota_settings.png" %}    
 
 4.  Add the <span class="api_gateway_variablesgateway">API
     Gateway</span> 2 host machine to the domain using `managedomain`.
@@ -305,16 +329,31 @@ the following steps:
     1.  Edit the `envSettings.props` file for the
         <span class="api_gateway_variablesgateway">API Gateway</span>
         instance in the following directory:
-
-5.  2.  Add the <span class="api_gateway_variablesapi_mgr">API
+        ```console
+        INSTALL_DIR/apigateway/groups/<group-n>/<instance-m>/conf/envSettings.props
+        ````
+    2.  Add the <span class="api_gateway_variablesapi_mgr">API
         Manager</span> ports. For example, the defaults are:
 
-<!-- end list -->
+```console
+#API Manager Port
+env.PORT.APIPORTAL=8075
+
+#API Manager Traffic Port
+env.PORT.PORTAL.TRAFFIC=8065
+````
+
+
 
 1.  Start the second <span class="api_gateway_variablesgateway">API
     Gateway</span> instance. For example:
+    ```console
+    startinstance -n "my_gw_server_2" -g "my_group"
+    ````
 2.  On startup, this instance receives the
     <span class="api_gateway_variablesapi_mgr">API Manager</span>
     configuration for the group. It now shares the same KPS and
     Cassandra configuration and data, and uses the ports specified in
     the `envSettings.props` file.
+
+{% include links.html %}
