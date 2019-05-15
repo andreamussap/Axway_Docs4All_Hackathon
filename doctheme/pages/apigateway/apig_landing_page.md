@@ -1,11 +1,13 @@
 ---
-title: API Gateway
+title: API Gateway documentation
 keywords: mydoc
+summary: "This is just a sample topic..."
 sidebar: apig_sidebar
-toc: false
 permalink: apig_landing_page.html
 folder: apigateway
 ---
+
+Welcome to API Gateway documentation! 
 
 ## Sample Content
 
