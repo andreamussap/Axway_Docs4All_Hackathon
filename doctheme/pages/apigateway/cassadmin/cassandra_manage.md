@@ -9,9 +9,9 @@ folder: apigateway
 
 # <span id="top"></span>Manage Apache Cassandra
 
-On <span class="api_gateway_variablesunix_flavours">Linux</span>, when
+On Linux<, when
 you select to install Cassandra using the
-<span class="api_gateway_variablesgateway">API Gateway</span> installer
+API Gateway installer
 as part of a Standard or Complete setup, Cassandra starts automatically.
 To start or stop Cassandra manually or as a service, perform the steps
 described in this topic.
