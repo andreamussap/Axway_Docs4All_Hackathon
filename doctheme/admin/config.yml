@@ -1,0 +1,18 @@
+backend:
+  name: git-gateway
+  branch: master
+
+publish_mode: editorial_workflow
+media_folder: "images"
+
+collections:
+  - name: "document" # Used in routes
+    label: "Document" # Used in the UI
+    folder: "doctheme/_posts" # Path to the folder where the routes are stored
+    create: true # Allow users to create new documents in this collection
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Filename template (YYY-MM-DD-title.md)
+    fields: # The fields for each document in front matter to be filled in the UI
+      - {label: "Layout", name: "layout", widget: "hidden", default: "document"}
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Publish Date", name: "date", widget: "datetime"}
+      - {label: "Body", name: "body", widget: "markdown"}
