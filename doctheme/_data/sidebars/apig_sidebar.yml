@@ -23,20 +23,20 @@ entries:
   - title: Getting Started
     output: web, pdf
     folderitems:
-    - title: API Gateway home
+    - title: Introduction to API Gateway
       url: /apig_landing_page.html
       output: web
 
-    - title: Sample 1
-      url: /p1_sample1.html
+    - title: Install API Gateway
+      url: /apig_install.html
       output: web, pdf
 
-    - title: Sample 2
-      url: /p1_sample2.html
+    - title: Deploy API Gateway in containers
+      url: /apig_deploy.html
       output: web, pdf
 
-    - title: Sample 3
-      url: /p1_sample3.html
+    - title: Upgrade API Gateway
+      url: /apig_upgrade.html
       output: web, pdf
 
   - title: Administer Apache Cassandra

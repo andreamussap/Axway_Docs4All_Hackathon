@@ -12,16 +12,17 @@ site_title: Jekyll theme for documentation
 company_name: Your company
 # this appears in the footer
 
-github_editme_path: tomjoht/documentation-theme-jekyll/blob/gh-pages/
+github_editme_path: andreamussap/Axway_Docs4All_Hackathon/blob/master/doctheme/
+# TODO Change the path above if we move the site to the root folder (delete the doctheme part of the path)
 # if you're using Github, provide the basepath to the branch you've created for reviews, following the sample here. if not, leave this value blank.
 
 # gitlab_editme_path: tomjoht/documentation-theme-jekyll/blob/gh-pages/
 # if you're using GitLab, provide the basepath to the branch you've created for reviews, following the sample here. if not, leave this value blank.
 
-disqus_shortname: idratherbewriting
+disqus_shortname:
 # if you're using disqus for comments, add the shortname here. if not, leave this value blank.
 
-google_analytics: UA-66296557-1
+google_analytics:
 # if you have google-analytics ID, put it in. if not, edit this value to blank.
 
 host: 127.0.0.1
@@ -105,6 +106,7 @@ sidebars:
 - mydoc_sidebar
 - product1_sidebar
 - product2_sidebar
+- apig_sidebar
 - other
 
 description: "Intended as a documentation theme based on Jekyll for technical writers documenting software and other technical products, this theme has all the elements you would need to handle multiple products with both multi-level sidebar navigation, tags, and other documentation features."
