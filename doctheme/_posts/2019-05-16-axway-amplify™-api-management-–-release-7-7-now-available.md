@@ -1,20 +1,14 @@
 ---
 title: Axway AMPLIFY™ API Management – Release 7.7 Now Available
 date: 2019-05-16T07:48:09.011Z
-permalink: amplifyapim77.html
-summary: "AMPLIFY API Management is now available!"
-tags: [news]
 ---
-
-# Axway AMPLIFY™ API Management – Release 7.7 Now Available
+# Axway AMPLIFY™ API Management – Release 7.7 Now Available.
 
 Integration continues to be a key enabler - or inhibitor - for business innovation in every organization. A new set of capabilities are emerging, while others are maturing, to power traditional integration patterns (e.g. files, transactions, messages) and new API/Microservices to work together in the rapid creation of new applications and solutions. These are being characterized by analysts as Hybrid Integration.
 
 Axway is at the forefront of Hybrid Integration with our AMPLIFY platform. The value in this platform approach is to enable new stakeholders (e.g. ad-hoc integrators, LOB users, and partners) to quickly discover, try and put into production solutions that integrate and extend their systems and customer experiences, all under the control and policies governed by IT. The AMPLIFY platform capabilities provide a powerful add-on foundation to AMPLIFY API Management v7.7. It enables a central management control plane called AMPLIFY Central that enables you to control and manage API traffic and across multiple service mesh running in different clouds from on-premises to AWS, Google, and Microsoft Azure. AMPLIFY Central provides centralized policy management and traffic monitoring and usage analytics. Additionally, the AMPLIFY platform provides the Unified Catalog where teams can share the services and manage the consumption of those services across all the service meshes.
 
 Axway is pleased to announce the 7.7 release of Axway AMPLIFY™ API Management, which includes API Gateway 7.7, API Manager 7.7 and API Portal 7.7. This release brings enterprise API lifecycle management to the next level with key capabilities to improve compliance, user experience, and customizability in delivering secured APIs for digital initiatives.
-
-
 
 ### Highlights include
 
@@ -42,11 +36,7 @@ Axway is pleased to announce the 7.7 release of Axway AMPLIFY™ API Management,
 
 •	Try it/Try Method Improvements enforce authentication credentials (e.g. API Key, OAuth) to select an application.
 
-
-
 ### API Consumer Experience enhancements
-
-
 
 •	GDPR compliance, auditing and privacy management improvements including support for Configurable privacy statements, enhanced application sharing and enhanced password governance.
 
@@ -54,33 +44,24 @@ Axway is pleased to announce the 7.7 release of Axway AMPLIFY™ API Management,
 
 •	Customization options enhancements including the ability to update custom properties from API Manager, leveraging Joomla role mapping for existing users to expand access to the Joomla admin interface capabilities, wildcard support for tags and much more.
 
-
-
-
-
 ## Access to this release
 
 All customers can download this release from Axway Support Site.
-
-
 
 ## Product capabilities discontinued/deprecated and End Of Support (EOS) announcements
 
 •	API Tester: Axway regularly reviews the viability of the API Management’s components and capabilities. After careful consideration, the API Tester component is no longer supported and will be removed from the next major release (7.8). For testing APIs, it is recommended to use alternative tools, such as Postman, SoapUI, or API Fortress.
 
-
-
 ## Product Life Cycle
 
 API Management 7.7 is released under the PLC 3 product life cycle and is classified as a Long-Term Release. More information please refer to: https://axway.jiveon.com/docs/DOC-126701
 
+## 
 
+Migration and upgrade
 
-##Migration and upgrade
-
-AMPLIFY™ API Management release 7.7 is recommended for all customers running older releases of API Management. Customers running release 7.3.1 and above can upgrade directly to release 7.7. Older versions of API Management require additional upgrade steps in between. Please refer to the https://docs.axway.com for the latest instructions.
-
-
+AMPLIFY™ API Management release 7.7 is recommended for all customers running older releases of API Management. Customers running release 7.3.1 and above can upgrade directly to release 7.7. Older versions of
+ API Management require additional upgrade steps in between. Please refer to the https://docs.axway.com for the latest instructions.
 
 ## Service offering and training
 
