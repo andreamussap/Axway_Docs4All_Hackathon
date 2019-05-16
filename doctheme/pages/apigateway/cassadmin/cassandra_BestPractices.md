@@ -1,7 +1,7 @@
 ---
 title: Best practices
 keywords: sample
-summary: "This is just a sample topic..."
+summary: "This is a topic about Cassandra best practices"
 sidebar: apig_sidebar
 permalink: cassandra_BestPractices.html
 folder: apigateway
