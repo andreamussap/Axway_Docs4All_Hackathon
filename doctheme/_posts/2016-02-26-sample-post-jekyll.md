@@ -1,17 +1,12 @@
 ---
-title:  Contribute to APIM docs - Help needed
-published: true
-permalink: samplepost.html
-summary: "This is some summary frontmatter for my sample post."
-tags: [news, getting_started]
+title: Contribute to APIM docs - Help needed
+date: 2019-05-16T13:13:31.836Z
 ---
-
 For PDG Invent Hackathon 2019 a group of us are working on ways to enable anyone (technical or non-technical) to contribute directly to documentation.
 
-If you are willing to give up a few minutes of your time, please follow the steps at 
+If you are willing to give up a few minutes of your time, please follow the [steps at this link](https://techweb.axway.com/confluence/display/RDAPI/Docs4all+Hackathon+2019+user+testing#Docs4allHackathon2019usertesting-Option1-TesttheEditonGithubworkflow).
 
 
-https://techweb.axway.com/confluence/display/RDAPI/Docs4all+Hackathon+2019+user+testing#Docs4allHackathon2019usertesting-Option1-TesttheEditonGithubworkflow
 
 Some of you will also receive invites shortly from netlify.com inviting you to create a user on http://hopeful-jennings-7da6b5.netlify.com. 
 
