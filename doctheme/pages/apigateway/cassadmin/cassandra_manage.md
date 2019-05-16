@@ -23,7 +23,7 @@ described in this topic.
 
 ## Manage Apache Cassandra
 
-This section explains how to start and stop Cassandra.
+This section explains how to start and **stop** Cassandra.
 
 ### Start Apache Cassandra
 
