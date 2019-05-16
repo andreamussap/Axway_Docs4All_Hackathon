@@ -1,9 +1,9 @@
 ---
-title: Test post from last year
+title: Cassandra Installation Guide
 date: 2019-05-15T14:12:20.701Z
-permalink: test-post-last-year.html
-tags: [news]
 ---
+> (AM) I have updated the title.
+
 This is just a test post from the previous year.
 
 {% include links.html %}
