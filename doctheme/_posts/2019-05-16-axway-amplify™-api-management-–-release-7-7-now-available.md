@@ -1,8 +1,11 @@
 ---
-layout: document
 title: Axway AMPLIFY™ API Management – Release 7.7 Now Available
 date: 2019-05-16T07:48:09.011Z
+permalink: amplifyapim77.html
+summary: "AMPLIFY API Management is now available!"
+tags: [news]
 ---
+
 # Axway AMPLIFY™ API Management – Release 7.7 Now Available
 
 Integration continues to be a key enabler - or inhibitor - for business innovation in every organization. A new set of capabilities are emerging, while others are maturing, to power traditional integration patterns (e.g. files, transactions, messages) and new API/Microservices to work together in the rapid creation of new applications and solutions. These are being characterized by analysts as Hybrid Integration.
@@ -13,7 +16,7 @@ Axway is pleased to announce the 7.7 release of Axway AMPLIFY™ API Management,
 
 
 
-## Highlights include
+### Highlights include
 
 •	Traffic Monitor Enhancements including disable/enable monitoring per path allowing a more fine- grained monitoring configuration.
 
@@ -23,7 +26,7 @@ Axway is pleased to announce the 7.7 release of Axway AMPLIFY™ API Management,
 
 •	Container Mode Enhancements adding capability to set trace level and Cassandra details through environmental variables, selector log file naming support and the ability to insert files at container startup.
 
-New features for API Lifecycle Management
+### New features for API Lifecycle Management
 
 •	Enhanced OpenAPI Specifications 2 Support (OAS, aka Swagger) preserves additional fields as part of the API Catalog’s OAS representation.
 
@@ -41,7 +44,7 @@ New features for API Lifecycle Management
 
 
 
-## API Consumer Experience enhancements
+### API Consumer Experience enhancements
 
 
 
@@ -61,7 +64,7 @@ All customers can download this release from Axway Support Site.
 
 
 
-Product capabilities discontinued/deprecated and End Of Support (EOS) announcements
+## Product capabilities discontinued/deprecated and End Of Support (EOS) announcements
 
 •	API Tester: Axway regularly reviews the viability of the API Management’s components and capabilities. After careful consideration, the API Tester component is no longer supported and will be removed from the next major release (7.8). For testing APIs, it is recommended to use alternative tools, such as Postman, SoapUI, or API Fortress.
 
@@ -73,7 +76,7 @@ API Management 7.7 is released under the PLC 3 product life cycle and is classif
 
 
 
-## Migration and upgrade
+##Migration and upgrade
 
 AMPLIFY™ API Management release 7.7 is recommended for all customers running older releases of API Management. Customers running release 7.3.1 and above can upgrade directly to release 7.7. Older versions of API Management require additional upgrade steps in between. Please refer to the https://docs.axway.com for the latest instructions.
 
@@ -92,11 +95,3 @@ Troubleshooting assistance with the product is provided by the Global Support Te
 ## Support for previous releases
 
 For the latest information on previous releases, please refer to the product page on the Axway Support Site. The product menu provides access to all available product pages; each page includes a list of releases with official general End of Support (EOS) dates.
-
-
-
-## Upcoming webinar
-
-Please join us for an upcoming webinar on the topic - How iPaaS changes API Management to Mesh Apps Together Faster.
-
-In this webinar learn why API Management and iPaaS solutions work better together. Learn how Axway’s hybrid integration platform AMPLIFY provides both API Management and Application Integration capabilities through a single platform to accelerate consumption and delivery of new business services in your organization.
