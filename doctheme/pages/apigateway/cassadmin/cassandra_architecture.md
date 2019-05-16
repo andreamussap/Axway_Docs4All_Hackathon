@@ -9,7 +9,7 @@ folder: apigateway
 
 # Cassandra deployment architectures
 
-This topic describes the Cassandra deployment architectures supported by
+This topic describes the Apache Cassandra deployment architectures supported by
 <span class="api_gateway_variablesgateway">API Gateway</span>. The
 following table provides a summary:
 
