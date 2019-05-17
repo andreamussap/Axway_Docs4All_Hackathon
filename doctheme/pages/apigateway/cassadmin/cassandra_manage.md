@@ -133,3 +133,5 @@ For more details on Apache Cassandra, see the following:
   - [http://docs.datastax.com/en/cassandra/2.2/](http://docs.datastax.com/en/cassandra/2.2/ "http://docs.datastax.com/en/cassandra/2.2/")
 
 {% include links.html %}
+
+## This is a new test message.
