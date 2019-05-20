@@ -1,6 +1,6 @@
 ---
 title: API Gateway documentation
-keywords: mydoc
+keywords: mydoc test
 summary: "This is just a sample topic..."
 sidebar: apig_sidebar
 permalink: apig_landing_page.html
