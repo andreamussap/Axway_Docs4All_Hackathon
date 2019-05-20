@@ -153,8 +153,8 @@ differences when installing and configuring remote Cassandra are:
 
   - You must provision separate host machines for Cassandra and
     <span class="api_gateway_variablesgateway">API Gateway</span>.
-    However, the data can be stored outside the DMZ, and there might be
-    improved performance.
+    However, the data can be stored outside the DMZ.  As a result, 
+    there might be improved performance.
   - You might need to open ports in the firewall to connect to Cassandra
     outside the DMZ. For more details, see [Configure a highly available
     Cassandra cluster](cassandra_config.htm#Network).
