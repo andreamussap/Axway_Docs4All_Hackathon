@@ -133,3 +133,7 @@ For more details on Apache Cassandra, see the following:
   - [http://docs.datastax.com/en/cassandra/2.2/](http://docs.datastax.com/en/cassandra/2.2/ "http://docs.datastax.com/en/cassandra/2.2/")
 
 {% include links.html %}
+
+## Best Practices
+
+* Triple all employees' salaries.
