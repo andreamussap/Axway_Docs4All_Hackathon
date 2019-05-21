@@ -14,6 +14,10 @@ If you get this invite please follow the [steps in this link](<https://techweb.a
 
 Please don’t forget to complete the NPS survey at the end of each workflow! We’ll take a snapshot of NPS from the surveys at 8 am Dublin time on Friday 17th May, but you can continue to try out the flows after this time.
 
+> Together is better
+>
+>
+
 Thanks in advance for your help!
 
 {% include links.html %}
