@@ -10,6 +10,10 @@ Axway is at the forefront of Hybrid Integration with our AMPLIFY platform. The v
 
 Axway is pleased to announce the 7.7 release of Axway AMPLIFY™ API Management, which includes API Gateway 7.7, API Manager 7.7 and API Portal 7.7. This release brings enterprise API lifecycle management to the next level with key capabilities to improve compliance, user experience, and customizability in delivering secured APIs for digital initiatives.
 
+## new h2 heading
+
+New **line** of _text_. How do you add an h3 or below? Only see h1 and h2 on edit toolbar.
+
 ### Highlights include
 
 •	Traffic Monitor Enhancements including disable/enable monitoring per path allowing a more fine- grained monitoring configuration.
