@@ -29,7 +29,7 @@ Manager</span>.
 
 [About this guide](CassandraAboutPreface)
 
-## For existing users
+## For existing users (test)
 
 [Cassandra deployment architectures](cassandra_architecture)
 
