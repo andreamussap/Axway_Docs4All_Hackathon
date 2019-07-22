@@ -1,5 +1,5 @@
 ---
-title: Best practices
+title: Best practices which have been edited
 keywords: sample
 summary: "This is a topic about Cassandra best practices"
 sidebar: apig_sidebar
