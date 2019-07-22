@@ -44,11 +44,7 @@ To start Cassandra in the foreground, run the following command:
 For more details, see
 <https://wiki.apache.org/cassandra/RunningCassandra>.
 
-### Start Cassandra as a service
-
-To install Cassandra as a service, you must install and configure
-appropriate startup script for your system. For example, see the
-following example startup scripts:
+sample edit. added this text and deleted some text
 
   - **CentOS**:
   - [https://support.axway.com/kb/178063/language/en](https://support.axway.com/kb/178063/language/en "https://support.axway.com/kb/178063/language/en")
