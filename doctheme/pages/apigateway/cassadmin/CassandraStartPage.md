@@ -1,7 +1,7 @@
 ---
 title: Overview
 keywords: sample
-summary: "This is just a sample topic..."
+summary: "This is just a sample topic ..."
 sidebar: apig_sidebar
 permalink: CassandraStartPage.html
 folder: apigateway
