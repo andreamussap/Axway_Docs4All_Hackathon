@@ -7,6 +7,10 @@ permalink: cassandra_BestPractices.html
 folder: apigateway
 ---
 
+
+## New section
+Testing update in git
+
 # <span class="api_gateway_variablescassandra">Apache Cassandra</span> best practices
 
 Follow the best practices in this section to achieve a stable
