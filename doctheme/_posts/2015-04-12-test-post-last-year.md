@@ -2,7 +2,7 @@
 title: Jive post - Meet with Engineering Program
 date: 2019-05-15T14:12:20.701Z
 ---
-This is just a test post from the previous year.
+**This is just a test post from the previous year.**
 
 In Q1, we had many customer events and meeting to present our updated AMPLIFY offer. Several customers raised interest to have closer relationship, to explain us how they are using our products so we can better anticipate their needs, to better understand how we work. 2 examples among others: Banco ITAU on API, Mercadona on Automator.
 
@@ -14,5 +14,6 @@ Depending on product used, customer will have to select a different location to 
 
 More details in attached document (sample agenda, product and contact for each location).
 
-{% include links.html %}
 
+
+{% include links.html %}
