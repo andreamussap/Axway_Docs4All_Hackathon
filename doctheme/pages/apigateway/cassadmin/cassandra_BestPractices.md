@@ -105,7 +105,7 @@ sudo swapoff -a sad
 Set the minimum limits for the user account.
 
 If running with a console or `init.d`, create a
-`/etc/security/limits.d/cassandra.conf` file, and add the following
+`/etc/security/limits.d/cassandra.conf` file and add the following
 lines to it (replace `cassandra_user` with the relevant user account).
 
 <table>
