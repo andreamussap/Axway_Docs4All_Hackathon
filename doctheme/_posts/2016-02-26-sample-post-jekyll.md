@@ -20,4 +20,12 @@ Please don’t forget to complete the NPS survey at the end of each workflow! We
 
 Thanks in advance for your help!
 
+```
+$ whoami
+```
+
+
+
+
+
 {% include links.html %}
