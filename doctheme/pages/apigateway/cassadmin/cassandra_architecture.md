@@ -46,6 +46,15 @@ following table provides a summary:
 <li>Production environment</li>
 </ul></td>
 </tr>
+    <tr class="even">
+<td><strong>Cassandra RDS Deployment</strong></td>
+<td><p>lorem ipsum ipsum ipsum  <span class="api_gateway_variablesgateway">API Gateway</span> instances in a group, each <span class="api_gateway_variablesgateway">API Gateway</span> instance on different hosts, with a Cassandra storage node local to each <span class="api_gateway_variablesgateway">API Gateway</span> host.</p></td>
+<td><ul>
+<li>Pre-production environment</li>
+<li>Production environment</li>
+</ul></td>
+</tr>
+    
 </tbody>
 </table>
 
