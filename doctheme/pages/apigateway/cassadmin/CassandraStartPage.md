@@ -25,6 +25,10 @@ database for <span class="axway_variablesComponent Short Name">API
 Gateway</span> and <span class="api_gateway_variablesapi_mgr">API
 Manager</span>.
 
+## New heading
+
+New line of text
+
 ## For new users
 
 [About this guide](CassandraAboutPreface)
