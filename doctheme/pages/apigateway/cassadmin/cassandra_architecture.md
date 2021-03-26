@@ -46,6 +46,14 @@ following table provides a summary:
 <li>Production environment</li>
 </ul></td>
 </tr>
+<tr class="even">
+<td><strong>No Cassandra storage</strong></td>
+<td>No <span class="api_gateway_variablesgateway">API Gateway</span> instances need a connection to Cassandra.</td>
+<td><ul>
+<li>No environment</li>
+<li>Invisible environment</li>
+</ul></td>
+</tr>
 </tbody>
 </table>
 
@@ -218,8 +226,12 @@ client of the Cassandra cluster as follows:
 
 {% include note.html content="You can have any number of API Gateway instances (all running either locally or remote to Cassandra). However, you must have at least two API Gateway instances for HA. This also applies to API Manager." %}
 
-
 For more details on Cassandra HA configuration, see [Configure a highly
 available Cassandra cluster](cassandra_config).
+
+## No Cassandra
+
+If your <span class="api_gateway_variablesgateway">API Gateway</span> does not need storage, or if your <span class="api_gateway_variablesgateway">API Gateway</span> instance doesn't exist, we recommend the No Cassandra build.
+
 
 {% include links.html %}
