@@ -27,19 +27,13 @@ This section explains how to start and stop Cassandra.
 
 ### Start Apache Cassandra
 
-To start Cassandra in the background:
+To start Caqssandra:
+```bash
+$ cd CASSANDRA\_HOME/bin
+$ ./cassandra
+```
 
-1.  Open a command prompt, and change to the following directory:
-
-`$ cd CASSANDRA\_HOME/bin`
-
-2.  Run the following command:
-
-`$ ./cassandra`
-
-To start Cassandra in the foreground, run the following command:
-
-`$ ./cassandra -f`
+Note that it is also possible to start Cassandra in the foreground, run the following command: `$ ./cassandra -f`
 
 For more details, see
 <https://wiki.apache.org/cassandra/RunningCassandra>.
